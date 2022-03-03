@@ -43,7 +43,7 @@ namespace BugTracker.Services
             try
             {
                 members = await _context.Users
-                                        .Where(m => m.CompanyId == companyId)
+                                        .Where(u => u.CompanyId == companyId)
                                         .ToListAsync();
                 return members;
             }
@@ -60,6 +60,26 @@ namespace BugTracker.Services
             {
                 projects = await _context.Projects
                                          .Where(p => p.CompanyId == companyId)
+                                         .Include(p => p.Members)!
+                                         .Include(p => p.Tickets)!
+                                             .ThenInclude(t => t.Comments)
+                                         .Include(p => p.Tickets)!
+                                             .ThenInclude(t => t.Attachments)
+                                         .Include(p => p.Tickets)!
+                                             .ThenInclude(t => t.History)
+                                         .Include(p => p.Tickets)!
+                                             .ThenInclude(t => t.Notifications)
+                                         .Include(p => p.Tickets)!
+                                             .ThenInclude(t => t.DeveloperUser)
+                                         .Include(p => p.Tickets)!
+                                             .ThenInclude(t => t.OwnerUser)
+                                         .Include(p => p.Tickets)!
+                                             .ThenInclude(t => t.TicketStatus)
+                                         .Include(p => p.Tickets)!
+                                             .ThenInclude(t => t.TicketPriority)
+                                         .Include(p => p.Tickets)!
+                                             .ThenInclude(t => t.TicketType)
+                                         .Include(p => p.ProjectPriorty)
                                          .ToListAsync();
                 return projects;
             }
@@ -71,12 +91,12 @@ namespace BugTracker.Services
 
         public async Task<List<Ticket>> GetAllTicketsAsync(int companyId)
         {
+            List<Project> projects = new();
             List<Ticket> tickets = new();
             try
             {
-                tickets = await _context.Tickets
-                                        
-                                        .ToListAsync();
+                projects = await GetAllProjectsAsync(companyId);
+                tickets = projects.SelectMany(p => p.Tickets).ToList();
                                         
 
                 return tickets;
@@ -88,13 +108,20 @@ namespace BugTracker.Services
         }
         public async Task<List<Invite>> GetAllInvitesAsync(int companyId)
         {
-            List<Invite> invites = new();
+            List<Invite>? invites = new();
             try
             {
-                invites = await _context.Invites
-                                        .Where(i => i.CompanyId == companyId)
-                                        .ToListAsync();
-                return invites;
+                invites = (await _context.Companies
+                                         .Include(c => c.Invites)!
+                                            .ThenInclude(i => i.Company)
+                                         .Include(c => c.Invites)!
+                                            .ThenInclude(i => i.Project)
+                                         .Include(c => c.Invites)!
+                                            .ThenInclude(i => i.Invitee)
+                                         .Include(c => c.Invites)!
+                                            .ThenInclude(i => i.Invitor)
+                                         .FirstOrDefaultAsync(c => c.Id == companyId))?.Invites!.ToList();
+                return invites!;
             }
             catch (Exception)
             {
