@@ -23,7 +23,7 @@ namespace BugTracker.Models
         [NotMapped]
         public string? FullName 
         {
-            get { return $"{LastName}, {FirstName}"; }
+            get { return $"{FirstName} {LastName}"; }
         }
 
 
