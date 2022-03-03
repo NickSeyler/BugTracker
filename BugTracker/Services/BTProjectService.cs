@@ -10,17 +10,28 @@ namespace BugTracker.Services
             throw new NotImplementedException();
         }
 
+        public Task<Project> GetProjectByIdAsync(int projectId, int companyId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateProjectAsync(Project project)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ArchiveProjectAsync(Project project)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public Task<bool> AddProjectManagerAsync(string userId, int projectId)
         {
             throw new NotImplementedException();
         }
 
         public Task<bool> AddUserToProjectAsync(string userId, int projectId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task ArchiveProjectAsync(Project project)
         {
             throw new NotImplementedException();
         }
@@ -46,11 +57,6 @@ namespace BugTracker.Services
         }
 
         public Task<List<BTUser>> GetDevelopersOnProjectAsync(int projectId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         {
             throw new NotImplementedException();
         }
@@ -101,11 +107,6 @@ namespace BugTracker.Services
         }
 
         public Task RemoveUsersFromProjectByRoleAsync(string role, int projectId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateProjectAsync(Project project)
         {
             throw new NotImplementedException();
         }
