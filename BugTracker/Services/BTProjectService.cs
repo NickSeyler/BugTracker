@@ -1,6 +1,7 @@
 ﻿using BugTracker.Data;
 using BugTracker.Models;
 using BugTracker.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BugTracker.Services
 {
@@ -13,19 +14,39 @@ namespace BugTracker.Services
             _context = context;
         }
 
-        public Task AddNewProjectAsync(Project project)
+        public async Task AddNewProjectAsync(Project project)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Add(project);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<Project> GetProjectByIdAsync(int projectId, int companyId)
+        public async Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var project = await _context.Projects
+                                            .Include(p => p.Company)
+                                            .Include(p => p.ProjectPriorty)
+                                            .FirstOrDefaultAsync(p => p.Id == projectId && p.CompanyId == companyId);
+                return project!;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task UpdateProjectAsync(Project project)
+        public async Task UpdateProjectAsync(Project project)
         {
-            throw new NotImplementedException();
+            _context.Update(project);
+            await _context.SaveChangesAsync();
         }
 
         public Task ArchiveProjectAsync(Project project)
@@ -93,6 +114,10 @@ namespace BugTracker.Services
         {
             throw new NotImplementedException();
         }
+        public Task<bool> IsAssignedProjectManager(string userId, int projectId)
+        {
+            throw new NotImplementedException();
+        }
 
         public Task<bool> IsUserOnProject(string userId, int projectId)
         {
@@ -115,6 +140,11 @@ namespace BugTracker.Services
         }
 
         public Task RemoveUsersFromProjectByRoleAsync(string role, int projectId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RestoreProjectsAsync(Project project)
         {
             throw new NotImplementedException();
         }

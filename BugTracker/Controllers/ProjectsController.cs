@@ -8,16 +8,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTracker.Data;
 using BugTracker.Models;
+using BugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using BugTracker.Extensions;
 
 namespace BugTracker.Controllers
 {
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BTUser> _userManager;
+        private readonly IBTProjectService _projectService;
 
-        public ProjectsController(ApplicationDbContext context)
+        public ProjectsController(ApplicationDbContext context,
+                                  UserManager<BTUser> userManager,
+                                  IBTProjectService projectService
+                                  )
         {
             _context = context;
+            _userManager = userManager;
+            _projectService = projectService;
         }
 
         // GET: Projects
@@ -34,11 +44,9 @@ namespace BugTracker.Controllers
             {
                 return NotFound();
             }
-
-            var project = await _context.Projects
-                .Include(p => p.Company)
-                .Include(p => p.ProjectPriorty)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            int companyId = User.Identity.GetCompanyId();
+            Project project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
+            
             if (project == null)
             {
                 return NotFound();
@@ -64,8 +72,7 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(project);
-                await _context.SaveChangesAsync();
+                await _projectService.AddNewProjectAsync(project);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", project.CompanyId);
@@ -107,8 +114,7 @@ namespace BugTracker.Controllers
             {
                 try
                 {
-                    _context.Update(project);
-                    await _context.SaveChangesAsync();
+                    await _projectService.UpdateProjectAsync(project);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
