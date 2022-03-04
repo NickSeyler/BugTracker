@@ -106,6 +106,7 @@ namespace BugTracker.Services
                 throw;
             }
         }
+
         public async Task<List<Invite>> GetAllInvitesAsync(int companyId)
         {
             List<Invite>? invites = new();

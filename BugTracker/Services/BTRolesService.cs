@@ -130,6 +130,7 @@ namespace BugTracker.Services
                 throw;
             }
         }
+
         public async Task<string> GetRoleNameByIdAsync(string roleId)
         {
             try
