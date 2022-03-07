@@ -13,9 +13,17 @@ namespace BugTracker.Services
             _context = context;
         }
 
-        public Task AddNewTicketAsync(Ticket ticket)
+        public async Task AddNewTicketAsync(Ticket ticket)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Add(ticket);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception)
+            {
+                throw;
+            }
         }
 
         public Task<Ticket> GetTicketByIdAsync(int ticketId)
@@ -23,9 +31,10 @@ namespace BugTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateTicketAsync(Ticket ticket)
+        public async Task UpdateTicketAsync(Ticket ticket)
         {
-            throw new NotImplementedException();
+            _context.Update(ticket);
+            await _context.SaveChangesAsync();
         }
 
         public Task ArchiveTicketAsync(Ticket ticket)
