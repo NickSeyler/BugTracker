@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<BugTracker.Models.Project>
+@using BugTracker.Services.Interfaces
+
+@inject IBTProjectService ProjectService
 
 @{
     ViewData["Title"] = "Index";
@@ -28,13 +31,7 @@
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageFileName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageFileData)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageContentType)
+
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Archived)
@@ -45,7 +42,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.ProjectPriorty)
             </th>
-            <th></th>
+            <th>
+                Project Manager
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -67,13 +66,7 @@
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImageFileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageFileData)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageContentType)
+
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Archived)
@@ -84,6 +77,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ProjectPriorty.Name)
             </td>
+            <td>
+                @((await ProjectService.GetProjectManagerAsync(item.Id))?.FullName)
+            </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

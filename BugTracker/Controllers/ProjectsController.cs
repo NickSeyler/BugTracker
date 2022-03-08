@@ -179,7 +179,15 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRole.ProjectManager), companyId), "Id", "FullName");
+            BTUser projectManager = await _projectService.GetProjectManagerAsync(companyId);
+            if(projectManager != null)
+            {
+                model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRole.ProjectManager), companyId), "Id", "FullName", projectManager!.Id);
+            }
+            else
+            {
+                model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRole.ProjectManager), companyId), "Id", "FullName");
+            }
             model.PriorityList = new SelectList(await _lookupService.GetProjectPrioritiesAsync(), "Id", "Name");
             return View(model);
         }
