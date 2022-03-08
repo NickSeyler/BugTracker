@@ -12,6 +12,8 @@ using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using BugTracker.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using BugTracker.Models.ViewModels;
+using BugTracker.Models.Enums;
 
 namespace BugTracker.Controllers
 {
@@ -20,15 +22,20 @@ namespace BugTracker.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTProjectService _projectService;
+        private readonly IBTRolesService _rolesService;
+        private readonly IBTLookupService _lookupService;
 
         public ProjectsController(ApplicationDbContext context,
                                   UserManager<BTUser> userManager,
-                                  IBTProjectService projectService
-                                  )
+                                  IBTProjectService projectService,
+                                  IBTRolesService rolesService,
+                                  IBTLookupService lookupService)
         {
             _context = context;
             _userManager = userManager;
             _projectService = projectService;
+            _rolesService = rolesService;
+            _lookupService = lookupService;
         }
 
         // GET: Projects
@@ -58,11 +65,14 @@ namespace BugTracker.Controllers
 
         [Authorize(Roles = "Admin, ProjectManager")]
         // GET: Projects/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             int companyId = User.Identity.GetCompanyId();
 
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
+            AddProjectWithPMViewModel model = new();
+
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRole.ProjectManager), companyId), "Id", "FullName");
+            model.PriorityList = new SelectList(await _lookupService.GetProjectPrioritiesAsync(), "Id", "Name");
             return View();
         }
 
