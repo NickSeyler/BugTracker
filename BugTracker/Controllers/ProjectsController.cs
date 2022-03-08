@@ -65,6 +65,7 @@ namespace BugTracker.Controllers
 
             int companyId = User.Identity.GetCompanyId();
             var projects = await _projectService.GetAllProjectsByCompanyAsync(companyId);
+            
             return View(projects);
         }
 
@@ -83,6 +84,38 @@ namespace BugTracker.Controllers
 
             return View(projects);
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AssignPM(int? projectId)
+        {
+            if (projectId == null)
+            {
+                return NotFound();
+            }
+
+            int companyId = User.Identity.GetCompanyId();
+
+            AssignPMViewModel model = new();
+
+            model.Project = await _projectService.GetProjectByIdAsync(projectId.Value, companyId);
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRole.ProjectManager), companyId), "Id", "FullName");
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignPM(AssignPMViewModel model)
+        {
+            if (!string.IsNullOrEmpty(model.PMID))
+            {
+                await _projectService.AddProjectManagerAsync(model.PMID, model.Project.Id);
+                return RedirectToAction(nameof(AllProjects));
+            }
+            return RedirectToAction(nameof(AssignPM), new { projectId = model.Project!.Id });
+        }
+
 
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -104,6 +137,7 @@ namespace BugTracker.Controllers
 
         [Authorize(Roles = "Admin, ProjectManager")]
         // GET: Projects/Create
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             int companyId = User.Identity.GetCompanyId();
@@ -162,6 +196,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

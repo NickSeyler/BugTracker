@@ -1,5 +1,93 @@
-﻿@foreach(Project project in Model)
-{
-	<p> @project.Id</p>
-	<p> @project.Name</p>
+﻿@model IEnumerable<BugTracker.Models.Project>
+@using BugTracker.Services.Interfaces
+
+@inject IBTProjectService ProjectService
+
+@{
+    ViewData["Title"] = "Index";
 }
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Archived)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Company)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectPriorty)
+            </th>
+            <th>
+                Project Manager
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Archived)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectPriorty.Name)
+            </td>
+            <td>
+                @((await ProjectService.GetProjectManagerAsync(item.Id))?.FullName)
+            </td>
+
+            <td>
+		        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+		        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+		        <a class="btn btn-sm btn-outline-info" asp-action="AssignPM" asp-route-id="@item.Id">Assign PM</a> |
+		        <a asp-action="Edit" asp-route-id="@item.Id">Delete</a>
+	        </td>
+        </tr>
+}
+    </tbody>
+</table>
