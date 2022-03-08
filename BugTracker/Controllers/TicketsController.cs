@@ -60,7 +60,7 @@ namespace BugTracker.Controllers
             }
             else
             {
-                tickets = await _ticketService.GetAllTicketsByCompanyAsync(companyId);
+                tickets = (await _ticketService.GetAllTicketsByCompanyAsync(companyId)).Where(t => !t.Archived).ToList();
             }
 
             return View(tickets);
