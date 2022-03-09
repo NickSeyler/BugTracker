@@ -195,7 +195,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var ticket in Model.Tickets.OrderByDescending(d => d.CreatedDate))
+                                        @foreach (Ticket ticket in Model.Tickets.OrderByDescending(d => d.CreatedDate))
                                         {
                                         <tr>
                                             <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" style="color:black"><strong>@ticket.Title</strong></a> </td>
