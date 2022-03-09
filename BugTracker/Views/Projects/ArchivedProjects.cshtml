@@ -1,17 +1,19 @@
 ﻿@model IEnumerable<BugTracker.Models.Project>
+@using BugTracker.Models.Enums
 @using BugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
 
 @inject IBTProjectService ProjectService
+@inject UserManager<BTUser> UserManager
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Archived Projects";
+    BTUser btUser = await UserManager.GetUserAsync(User);
 }
 
-<h1>Index</h1>
+<h1>Archive</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -82,9 +84,16 @@
             </td>
 
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn-primary btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                @{
+                    bool isProjectPM = (await ProjectService.GetProjectManagerAsync(item.Id))?.Id == btUser.Id;
+                }
+
+                @if(User.IsInRole(nameof(BTRole.Admin)) || isProjectPM)
+                {
+                    <a class="btn btn-sm btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a class="btn btn-sm btn-outline-success" asp-action="Restore" asp-route-id="@item.Id">Restore</a>
+                }
             </td>
         </tr>
 }
