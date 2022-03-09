@@ -125,7 +125,7 @@ namespace BugTracker.Controllers
 
             List<string> projectMembers = model.Project.Members.Select(m => m.Id).ToList();
 
-            model.UsersList = new MultiSelectList(teamMembers, "Id", "fullName", projectMembers);
+            model.UsersList = new MultiSelectList(teamMembers, "Id", "FullName", projectMembers);
 
             return View(model);
         }
