@@ -44,14 +44,6 @@ namespace BugTracker.Controllers
             _fileService = fileService;
         }
 
-        // GET: Projects
-        public async Task<IActionResult> Index()
-        {
-            int companyId = User.Identity.GetCompanyId();
-            var applicationDbContext = await _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriorty).Where(p => p.CompanyId == companyId).ToListAsync();
-            return View(applicationDbContext);
-        }
-
         public async Task<IActionResult> MyProjects()
         {
             string userId = _userManager.GetUserId(User);
@@ -181,7 +173,7 @@ namespace BugTracker.Controllers
                         await _projectService.AddProjectManagerAsync(model.PMID, model.Project.Id);
                     }
 
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(AllProjects));
 
                 }
                 catch(Exception)
@@ -256,7 +248,7 @@ namespace BugTracker.Controllers
                         await _projectService.AddProjectManagerAsync(model.PMID, model.Project.Id);
                     }
 
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(AllProjects));
 
                 }
                 catch (DbUpdateConcurrencyException)
@@ -307,8 +299,42 @@ namespace BugTracker.Controllers
             
             await _projectService.ArchiveProjectAsync(project);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AllProjects));
         }
+
+        // GET: Projects/Restore/5
+        public async Task<IActionResult> Restore(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            int companyId = User.Identity.GetCompanyId();
+            var project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return View(project);
+        }
+
+        // POST: Projects/Restore/5
+        [HttpPost, ActionName("Restore")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RestoreConfirmed(int id)
+        {
+            int companyId = User.Identity.GetCompanyId();
+            var project = await _projectService.GetProjectByIdAsync(id, companyId);
+
+            await _projectService.RestoreProjectAsync(project);
+
+            return RedirectToAction(nameof(AllProjects));
+        }
+
+
 
         private async Task<bool> ProjectExists(int id)
         {
