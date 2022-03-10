@@ -1,7 +1,15 @@
 ﻿@model IEnumerable<BugTracker.Models.Ticket>
+@using BugTracker.Models.Enums
+@using BugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+
+
+@inject IBTProjectService ProjectService
+@inject UserManager<BTUser> UserManager
 
 @{
     ViewData["Title"] = "Archived Tickets";
+    BTUser btUser = await UserManager.GetUserAsync(User);
 }
 
 <h1>Archive</h1>
@@ -91,9 +99,15 @@
                 @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                @{
+                    bool isProjectPM = (await ProjectService.GetProjectManagerAsync(item.Project.Id))?.Id == btUser.Id;
+                }
+
+                @if(User.IsInRole(nameof(BTRole.Admin)) || isProjectPM)
+                {
+                <a class="btn btn-sm btn-outline-success" asp-action="Restore" asp-route-id="@item.Id">Restore</a>
+                }
             </td>
         </tr>
         }

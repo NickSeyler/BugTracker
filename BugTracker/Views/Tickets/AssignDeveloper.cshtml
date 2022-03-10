@@ -1,0 +1,30 @@
+﻿@model BugTracker.Models.ViewModels.AssignDeveloperViewModel
+
+@{
+    ViewData["Title"] = "Assign Developer";
+}
+<h1>Ticket : @Model.Ticket?.Title</h1>
+<h4>Assign Developer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-action="AssignDeveloper" asp-controller="Tickets">
+            <input hidden asp-for="Ticket!.Id" />
+
+            <h2>@Model.Ticket?.Title </h2>
+
+            <p>@Model.Ticket?.Description </p>
+
+            <div class="form-group">
+                <label class="control-label">Select Developer</label>
+                <select asp-for="DeveloperID" class="form-control" asp-items="@Model.DeveloperList">
+                    <option></option>
+                </select>
+                <input type="submit" value="Assign" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="UnassignedTickets">Back to List</a>
+</div>

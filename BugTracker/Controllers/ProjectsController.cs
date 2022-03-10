@@ -391,7 +391,6 @@ namespace BugTracker.Controllers
         }
 
 
-
         private async Task<bool> ProjectExists(int id)
         {
             int companyId = User.Identity.GetCompanyId();

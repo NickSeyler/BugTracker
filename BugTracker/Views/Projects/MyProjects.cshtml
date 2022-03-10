@@ -28,9 +28,6 @@
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>
             <th>
-
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Archived)
             </th>
             <th>
@@ -63,9 +60,6 @@
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
             <td>
-
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Archived)
             </td>
             <td>
@@ -79,8 +73,8 @@
             </td>
 
             <td>
-                <a class="btn btn-sm btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a class="btn btn-sm btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                <a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@item.Id">Details</a>
                 <a class="btn btn-sm btn-outline-danger" asp-action="Archive" asp-route-id="@item.Id">Archive</a>
             </td>
         </tr>

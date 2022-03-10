@@ -82,7 +82,7 @@ namespace BugTracker.Services
 
                 foreach(Ticket ticket in project.Tickets)
                 {
-                   ticket.ArchivedByProject = true;
+                    ticket.ArchivedByProject = true;
                     _context.Update(ticket);
                     await _context.SaveChangesAsync();
                 }
@@ -112,6 +112,7 @@ namespace BugTracker.Services
                 throw;
             }
         }
+
 
 
         public async Task<bool> AddProjectManagerAsync(string userId, int projectId)

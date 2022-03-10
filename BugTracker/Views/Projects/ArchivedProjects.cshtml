@@ -33,9 +33,6 @@
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>
             <th>
-
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Archived)
             </th>
             <th>
@@ -68,9 +65,6 @@
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
             <td>
-
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Archived)
             </td>
             <td>
@@ -84,7 +78,8 @@
             </td>
 
             <td>
-                <a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@item.Id">Details</a>
+
                 @{
                     bool isProjectPM = (await ProjectService.GetProjectManagerAsync(item.Id))?.Id == btUser.Id;
                 }

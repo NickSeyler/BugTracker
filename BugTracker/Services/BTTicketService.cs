@@ -77,6 +77,21 @@ namespace BugTracker.Services
             }
         }
 
+        public async Task RestoreTicketAsync(Ticket ticket)
+        {
+            try
+            {
+                ticket.Archived = false;
+                _context.Update(ticket);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
         public async Task AddTicketCommentAsync(TicketComment ticketComment)
         {
             try

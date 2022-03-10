@@ -25,10 +25,12 @@ builder.Services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.Req
 
 builder.Services.AddScoped<IBTCompanyInfoService, BTCompanyInfoService>();
 builder.Services.AddScoped<IBTFileService, BTFileService>();
+builder.Services.AddScoped<IBTLookupService, BTLookupService>();
 builder.Services.AddScoped<IBTRolesService, BTRolesService>();
 builder.Services.AddScoped<IBTProjectService, BTProjectService>();
 builder.Services.AddScoped<IBTTicketService, BTTicketService>();
-builder.Services.AddScoped<IBTLookupService, BTLookupService>();
+builder.Services.AddScoped<IBTNotificationService, BTNotificationService>();
+builder.Services.AddScoped<IBTTicketHistoryService, BTTicketHistoryService>();
 
 
 builder.Services.AddMvc();
