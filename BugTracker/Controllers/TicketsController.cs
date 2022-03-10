@@ -33,13 +33,6 @@ namespace BugTracker.Controllers
             _companyInfoService = companyInfoService;
         }
 
-        // GET: Tickets
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
         public async Task<IActionResult> MyTickets()
         {
             string userId = _userManager.GetUserId(User);

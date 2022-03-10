@@ -4,10 +4,10 @@
 @inject IBTProjectService ProjectService
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All Projects";
 }
 
-<h1>Index</h1>
+<h1>All Projects</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -32,9 +32,6 @@
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>
             <th>
-
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Archived)
             </th>
             <th>
@@ -49,7 +46,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -65,9 +62,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Archived)
@@ -89,6 +83,6 @@
                 <a class="btn btn-sm btn-outline-warning" asp-action="AssignMembers" asp-route-projectId="@item.Id">Manage Team</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>
