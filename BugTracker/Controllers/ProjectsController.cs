@@ -31,7 +31,6 @@ namespace BugTracker.Controllers
                                   IBTLookupService lookupService,
                                   IBTFileService fileService)
         {
-            
             _userManager = userManager;
             _projectService = projectService;
             _rolesService = rolesService;
@@ -39,6 +38,7 @@ namespace BugTracker.Controllers
             _fileService = fileService;
         }
 
+        // GET: Projects/MyProjects
         public async Task<IActionResult> MyProjects()
         {
             string userId = _userManager.GetUserId(User);
@@ -47,6 +47,7 @@ namespace BugTracker.Controllers
             return View(projects);
         }
 
+        // GET: Projects/AllProjects
         public async Task<IActionResult> AllProjects()
         {
 
@@ -56,6 +57,7 @@ namespace BugTracker.Controllers
             return View(projects);
         }
 
+        // GET: Projects/ArchivedProjects
         public async Task<IActionResult> ArchivedProjects()
         {
             int companyId = User.Identity.GetCompanyId();
@@ -64,6 +66,7 @@ namespace BugTracker.Controllers
             return View(projects);
         }
 
+        // GET: Projects/UnassignedProjects
         public async Task<IActionResult> UnassignedProjects()
         {
             int companyId = User.Identity.GetCompanyId();
@@ -73,6 +76,7 @@ namespace BugTracker.Controllers
         }
 
 
+        // GET: Projects/AssignPM/5
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignPM(int? projectId)
@@ -91,6 +95,7 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
+        // POST: Projects/AssignPM/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignPM(AssignPMViewModel model)
@@ -104,6 +109,7 @@ namespace BugTracker.Controllers
         }
 
 
+        // GET: Projects/AssignMembers/5
         [HttpGet]
         [Authorize(Roles = "Admin, ProjectManager")]
         public async Task<IActionResult> AssignMembers(int? projectId)
@@ -130,6 +136,7 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
+        // POST: Projects/AssignMembers/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignMembers(ProjectMembersViewModel model)
@@ -178,9 +185,8 @@ namespace BugTracker.Controllers
             return View(project);
         }
 
-
-        [Authorize(Roles = "Admin, ProjectManager")]
         // GET: Projects/Create
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -193,8 +199,6 @@ namespace BugTracker.Controllers
         }
 
         // POST: Projects/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddProjectWithPMViewModel model)
@@ -273,8 +277,6 @@ namespace BugTracker.Controllers
         }
 
         // POST: Projects/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(AddProjectWithPMViewModel model)

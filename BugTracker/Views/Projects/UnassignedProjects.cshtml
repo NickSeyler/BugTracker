@@ -80,10 +80,10 @@
             </td>
 
             <td>
-		        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-		        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+		        <a class="btn btn-sm btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+		        <a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@item.Id">Details</a> |
 		        <a class="btn btn-sm btn-outline-info" asp-action="AssignPM" asp-route-projectId="@item.Id">Assign PM</a> |
-		        <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
+		        <a class="btn btn-sm btn-outline-danger" asp-action="Archive" asp-route-id="@item.Id">Archive</a>
 	        </td>
         </tr>
     }

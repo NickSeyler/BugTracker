@@ -12,6 +12,7 @@ using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using BugTracker.Extensions;
 using BugTracker.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTracker.Controllers
 {
@@ -33,6 +34,7 @@ namespace BugTracker.Controllers
             _companyInfoService = companyInfoService;
         }
 
+        // GET: Tickets/MyTickets
         public async Task<IActionResult> MyTickets()
         {
             string userId = _userManager.GetUserId(User);
@@ -42,6 +44,7 @@ namespace BugTracker.Controllers
             return View(tickets);
         }
 
+        // GET: Tickets/AllTickets
         public async Task<IActionResult> AllTickets()
         {
             List<Ticket> tickets = new();
@@ -59,6 +62,7 @@ namespace BugTracker.Controllers
             return View(tickets);
         }
 
+        // GET: Tickets/ArchivedTickets
         public async Task<IActionResult> ArchivedTickets()
         {
             int companyId = User.Identity.GetCompanyId();
@@ -67,6 +71,7 @@ namespace BugTracker.Controllers
             return View(tickets);
         }
 
+        // GET: Tickets/UnassignedTickets
         public async Task<IActionResult> UnassignedTickets()
         {
             int companyId = User.Identity.GetCompanyId();
@@ -74,6 +79,7 @@ namespace BugTracker.Controllers
 
             return View(tickets);
         }
+
 
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -83,14 +89,8 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            var ticket = await _context.Tickets
-                .Include(t => t.DeveloperUser)
-                .Include(t => t.OwnerUser)
-                .Include(t => t.Project)
-                .Include(t => t.TicketPriority)
-                .Include(t => t.TicketStatus)
-                .Include(t => t.TicketType)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Ticket ticket = await _ticketService.GetTicketByIdAsync(id.Value);
+
             if (ticket == null)
             {
                 return NotFound();
@@ -100,6 +100,8 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Create
+        [Authorize(Roles = "Admin, ProjectManager")]
+        [HttpGet]
         public IActionResult Create()
         {
             ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id");
