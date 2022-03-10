@@ -53,7 +53,7 @@
                             <ul class=" list-unstyled basic-list">
                                 <li>Start Date: <span class="">@Model.StartDate.DateTime.ToString("MMMM dd, yyyy")</span></li>
                                 <li>Deadline: <span class="">@Model.EndDate.DateTime.ToString("MMMM dd, yyyy")</span></li>
-                                <li>Priority: <span class="">@Model.ProjectPriorty.Name</span></li>
+                                <li>Priority: <span class="">@Model.ProjectPriorty!.Name</span></li>
                                 @if(today < end && today >= start)
                                 {
                                 <li>Status: <span class="">Active</span></li>
