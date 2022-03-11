@@ -1,9 +1,15 @@
-﻿/*
+﻿using BugTracker.Models;
+using BugTracker.Services.Interfaces;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Options;
+using MimeKit;
+
 namespace BugTracker.Services
 {
     public class BTEmailService : IEmailSender
     {
-
+        
         private readonly MailSettings _mailSettings;
 
 
@@ -15,8 +21,9 @@ namespace BugTracker.Services
 
         public async Task SendEmailAsync(string emailTo, string subject, string htmlMessage)
         {
+            
             MimeMessage email = new();
-
+            
             email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
             email.To.Add(MailboxAddress.Parse(emailTo));
             email.Subject = subject;
@@ -46,4 +53,3 @@ namespace BugTracker.Services
         }
     }
 }
-*/

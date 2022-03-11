@@ -1,4 +1,4 @@
-﻿@model BugTracker.Models.ViewModels.AddTicketWithProjectViewModel
+﻿@model BugTracker.Models.Ticket
 @using BugTracker.Models.Enums;
 
 @{
@@ -13,42 +13,31 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Ticket!.OwnerUserId" value=@Model.OwnerUserID />
-            <input type="hidden" asp-for="Ticket!.Archived" />
-            <input type="hidden" asp-for="Ticket!.ArchivedByProject" />
-
 
             <div class="form-group">
-                <label asp-for="Ticket!.Title" class="control-label"></label>
-                <input asp-for="Ticket!.Title" class="form-control" />
-                <span asp-validation-for="Ticket!.Title" class="text-danger"></span>
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Ticket!.Description" class="control-label"></label>
-                <input asp-for="Ticket!.Description" class="form-control" />
-                <span asp-validation-for="Ticket!.Description" class="text-danger"></span>
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
 
             <div class="form-group">
-                <label asp-for="Ticket!.TicketTypeId" class="control-label"></label>
-                <select asp-for="Ticket!.TicketTypeId" class ="form-control" asp-items="@Model.TypeList"></select>
+                <label asp-for="TicketTypeId" class="control-label"></label>
+                <select asp-for="TicketTypeId" class ="form-control" asp-items="@ViewBag.TicketTypeId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Ticket!.TicketPriorityId" class="control-label"></label>
-                <select asp-for="Ticket!.TicketPriorityId" class ="form-control" asp-items="@Model.PriorityList"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ticket!.TicketStatusId" class="control-label"></label>
-                <select asp-for="Ticket!.TicketStatusId" class ="form-control" asp-items="@Model.StatusList"></select>
+                <label asp-for="TicketPriorityId" class="control-label"></label>
+                <select asp-for="TicketPriorityId" class ="form-control" asp-items="@ViewBag.TicketPriorityId"></select>
             </div>
 
-
             <div class="form-group">
-                <label class="control-label">Project</label>
-                <select asp-for="ProjectID" class="form-control" asp-items="@Model.ProjectList">
-                    <option></option>
-                </select>
+                <label asp-for="ProjectId" class="control-label"></label>
+                <select asp-for="ProjectId" class="form-control" asp-items="@ViewBag.ProjectId"></select>
             </div>
 
             <div class="form-group">
