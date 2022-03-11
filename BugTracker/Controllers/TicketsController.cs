@@ -27,6 +27,7 @@ namespace BugTracker.Controllers
         private readonly IBTRolesService _rolesService;
         private readonly IBTLookupService _lookupService;
         private readonly IBTFileService _fileService;
+        private readonly IBTTicketHistoryService _ticketHistoryService;
 
         public TicketsController(ApplicationDbContext context,
                                  UserManager<BTUser> userManager,
@@ -35,7 +36,8 @@ namespace BugTracker.Controllers
                                  IBTCompanyInfoService companyInfoService,
                                  IBTRolesService rolesService,
                                  IBTLookupService lookupService,
-                                 IBTFileService fileService)
+                                 IBTFileService fileService,
+                                 IBTTicketHistoryService ticketHistoryService)
         {
             _context = context;
             _userManager = userManager;
@@ -45,6 +47,7 @@ namespace BugTracker.Controllers
             _rolesService = rolesService;
             _lookupService = lookupService;
             _fileService = fileService;
+            _ticketHistoryService = ticketHistoryService;
         }
 
         // GET: Tickets/MyTickets
@@ -189,6 +192,9 @@ namespace BugTracker.Controllers
                     ticketComment.CreatedDate = DateTime.UtcNow;
 
                     await _ticketService.AddTicketCommentAsync(ticketComment);
+
+                    await _ticketHistoryService.AddHistoryAsync(ticketComment.TicketId, nameof(TicketComment), ticketComment.UserId);
+
                 }
                 catch (Exception)
                 {
@@ -271,7 +277,8 @@ namespace BugTracker.Controllers
 
                     await _ticketService.AddNewTicketAsync(ticket);
 
-                    //TODO: Ticket History
+                    Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
+                    await _ticketHistoryService.AddHistoryAsync(null!, newTicket, btUser.Id);
 
                     //TODO: Ticket Notification
 
@@ -333,6 +340,8 @@ namespace BugTracker.Controllers
             {
 
                 BTUser btUser = await _userManager.GetUserAsync(User);
+                Ticket oldTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
+
 
                 try
                 {
@@ -340,8 +349,6 @@ namespace BugTracker.Controllers
                     ticket.UpdatedDate = DateTime.UtcNow;
 
                     await _ticketService.UpdateTicketAsync(ticket);
-
-                    return RedirectToAction(nameof(AllTickets));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -354,6 +361,11 @@ namespace BugTracker.Controllers
                         throw;
                     }
                 }
+
+                Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
+                await _ticketHistoryService.AddHistoryAsync(oldTicket, newTicket, btUser.Id);
+
+                return RedirectToAction(nameof(AllTickets));
             }
 
             ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name");
