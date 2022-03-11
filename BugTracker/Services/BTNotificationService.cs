@@ -41,7 +41,7 @@ namespace BugTracker.Services
                                                                  .Include(n => n.Recipient)
                                                                  .Include(n => n.Sender)
                                                                  .Include(n => n.Ticket)
-                                                                    .ThenInclude(t => t.Project)
+                                                                    .ThenInclude(t => t!.Project)
                                                                  .Where(n => n.RecipientId == userId).ToListAsync();
                 return notifications;
             }
@@ -59,7 +59,7 @@ namespace BugTracker.Services
                                                                  .Include(n => n.Recipient)
                                                                  .Include(n => n.Sender)
                                                                  .Include(n => n.Ticket)
-                                                                    .ThenInclude(t => t.Project)
+                                                                    .ThenInclude(t => t!.Project)
                                                                  .Where(n => n.SenderId == userId).ToListAsync();
                 return notifications;
             }
@@ -75,8 +75,8 @@ namespace BugTracker.Services
             {
                 BTUser btUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == notification.RecipientId);
 
-                string btUserEmail = btUser.Email;
-                string message = notification.Message;
+                string btUserEmail = btUser!.Email;
+                string message = notification.Message!;
 
                 //Send Email
                 try
@@ -106,7 +106,7 @@ namespace BugTracker.Services
                 foreach (BTUser btUser in members)
                 {
                     notification.RecipientId = btUser.Id;
-                    await SendEmailNotificationAsync(notification, notification.Title);
+                    await SendEmailNotificationAsync(notification, notification.Title!);
                 }
             }
             catch (Exception)
@@ -122,7 +122,7 @@ namespace BugTracker.Services
                 foreach (BTUser btUser in members)
                 {
                     notification.RecipientId = btUser.Id;
-                    await SendEmailNotificationAsync(notification, notification.Title);
+                    await SendEmailNotificationAsync(notification, notification.Title!);
                 }
             }
             catch (Exception)
