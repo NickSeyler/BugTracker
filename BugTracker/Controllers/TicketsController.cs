@@ -156,6 +156,7 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
         {
             string statusMessage;
+            ModelState.Remove("UserId");
 
             if (ModelState.IsValid && ticketAttachment.FormFile != null)
             {
@@ -163,7 +164,7 @@ namespace BugTracker.Controllers
                 ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
                 ticketAttachment.FileContentType = ticketAttachment.FormFile.ContentType;
 
-                ticketAttachment.CreatedDate = DateTimeOffset.Now;
+                ticketAttachment.CreatedDate = DateTime.UtcNow;
                 ticketAttachment.UserId = _userManager.GetUserId(User);
 
                 await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
