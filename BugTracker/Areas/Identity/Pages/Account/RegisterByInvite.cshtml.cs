@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using BugTracker.Services.Interfaces;
+using BugTracker.Models.Enums;
 
 namespace BugTracker.Areas.Identity.Pages.Account
 {
@@ -29,14 +31,18 @@ namespace BugTracker.Areas.Identity.Pages.Account
         private readonly IUserStore<BTUser> _userStore;
         private readonly IUserEmailStore<BTUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly Microsoft.AspNetCore.Identity.UI.Services.IEmailSender _emailSender;
+        private readonly IBTInviteService _inviteService;
+        private readonly IBTProjectService _projectService;
 
         public RegisterByInviteModel(
             UserManager<BTUser> userManager,
             IUserStore<BTUser> userStore,
             SignInManager<BTUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            Microsoft.AspNetCore.Identity.UI.Services.IEmailSender emailSender,
+            IBTInviteService inviteService,
+            IBTProjectService projectService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +50,8 @@ namespace BugTracker.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _inviteService = inviteService;
+            _projectService = projectService;
         }
 
         /// <summary>
@@ -51,7 +59,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -71,6 +79,25 @@ namespace BugTracker.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Display(Name = "Company")]
+            public string Company { get; set; }
+
+            [Required]
+            [Display(Name = "Company Id")]
+            public int CompanyId { get; set; }
+
+            [Required]
+            [Display(Name = "ProjectId")]
+            public int ProjectId { get; set; }
+
+            [Required]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -101,10 +128,20 @@ namespace BugTracker.Areas.Identity.Pages.Account
         }
 
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(int id, int companyId, string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            //Use "id" to find the invite  
+            Invite invite = await _inviteService.GetInviteAsync(id, companyId);
+            //Load Inputmodel with Invite information according to inviteId
+            Input.Email = invite.InviteeEmail;
+            Input.FirstName = invite.InviteeFirstName;
+            Input.LastName = invite.InviteeLastName;
+            Input.Company = invite.Company.Name;
+            Input.CompanyId = invite.CompanyId;
+            Input.ProjectId = invite.ProjectId;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -113,7 +150,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                var user = CreateUser(Input.CompanyId);
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -122,6 +159,10 @@ namespace BugTracker.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    await _projectService.AddUserToProjectAsync(user.Id, Input.ProjectId);
+
+                    await _userManager.AddToRoleAsync(user, nameof(BTRole.Submitter));
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -155,11 +196,16 @@ namespace BugTracker.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private BTUser CreateUser()
+        private BTUser CreateUser(int companyId)
         {
             try
             {
-                return Activator.CreateInstance<BTUser>();
+                BTUser btUser = Activator.CreateInstance<BTUser>();
+                btUser.FirstName = Input.FirstName;
+                btUser.LastName = Input.LastName;
+                btUser.CompanyId = companyId;
+
+                return btUser;
             }
             catch
             {
