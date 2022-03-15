@@ -42,6 +42,8 @@
 
 	</head>
 	<body>
+		<form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+</form>
 		<section class="body">
 
 			<!-- start: header -->
@@ -255,7 +257,7 @@
 									<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="bx bx-lock"></i> Lock Screen</a>
 								</li>
 								<li>
-									<a role="menuitem" tabindex="-1" href="pages-signin.html"><i class="bx bx-power-off"></i> Logout</a>
+									<a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutForm').submit();"><i class="bx bx-power-off"></i> Logout</a>
 								</li>
 							</ul>
 						</div>
