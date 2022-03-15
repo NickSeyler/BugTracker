@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table" id="myTable">
     <thead>
         <tr>
             <th>
@@ -99,3 +99,10 @@
         }
     </tbody>
 </table>
+
+
+<script>
+	$(document).ready( function () {
+		$('#myTable').DataTable();
+	} );
+</script>

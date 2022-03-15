@@ -1,0 +1,376 @@
+﻿@model BugTracker.Models.ViewModels.DashboardViewModel
+
+@using BugTracker.Models.Enums
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<BTUser> UserManager
+
+@{
+	ViewData["Title"] = "Dashboard";
+	BTUser btUser = await UserManager.GetUserAsync(User);
+}
+
+<h1>Dashboard</h1>
+<a href="javascript:void(0);">
+	@* User Info *@
+	@if (btUser.AvatarData != null)
+	{
+		<img class="" src="data:image/*;base64,@(Convert.ToBase64String(btUser.AvatarData))" alt="" />
+	}
+	else
+	{
+		<img class="" style="width:30px;height:30px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
+	}
+</a>
+<strong>@btUser.FullName</strong>
+<span class="text-muted" style="font-size:x-small;">
+	<strong>@Model.Company!.Name</strong>
+</span>
+
+
+<div>
+	<div classxfont-weighteighteightgetainer-fluid">
+		<div class="row mt-2">
+			<div class="col-lg-3 col-md-6 col-sm-6">
+				<a asp-action="AllProjects" asp-controller="Projects" style="text-decoration:none">
+					<div class="card text-center bg-info">
+						<div class="body">
+							<div class="p-15 text-light">
+								<h3>@Model.Projects!.Where(p => p.StartDate < DateTime.Now && p.EndDate > DateTime.Now).Count()</h3>
+								<span>Active Projects</span>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-lg-3 col-md-6 col-sm-6">
+				<a asp-action="AllTickets" asp-controller="Tickets" style="text-decoration:none">
+					<div class="card text-center bg-secondary">
+						<div class="body">
+							<div class="p-15 text-light">
+
+								<h3>@Model.Tickets!.Count()</h3>
+								<span>Total Tickets</span>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-lg-3 col-md-6 col-sm-6">
+				<div class="card text-center bg-warning">
+					<div class="body">
+						<div class="p-15 text-light">
+							<h3>@Model.Tickets!.Where(t => string.IsNullOrEmpty(t.DeveloperUserId)).Count()</h3>
+							<span>Unassigned Tickets</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 col-sm-6">
+				<div class="card text-center bg-dark">
+					<div class="body">
+						<div class="p-15 text-light">
+							<h3>
+								@(
+								Model.Projects!.Count()
+								+ Model.Tickets!.Count()
+								+ Model.Members!.Count()
+								)
+							</h3>
+							<span>Total Data</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row gy-2">
+			<div class="col-md-12 col">
+				<div class="row col-cols-4 mt-5 bg-secondary">
+					<div class="card col m-1 p-2">
+						<div class="card-body">
+							<h5>Projects by Priority</h5>
+							<div id="chart3D"></div>
+						</div>
+					</div>
+					<div class="card col m-1 p-2">
+						<div class="card-body">
+							<h5>Project Tickets Count (%)</h5>
+							<div id="donut"></div>
+						</div>
+					</div>
+					<div class="card col m-1 p-2">
+						<div class="card-body">
+							<h5>Tickets by Priority</h5>
+							<!-- Morris: Donut -->
+							<div class="col-md-12">
+								<div id="legend" class="donut-legend" style="font-size:x-small"></div>
+							</div>
+							<div class="col-md-12">
+								<div class="chart chart-md" id="morrisTicketPriority"></div>
+							</div>
+						</div>
+					</div>
+					<div class="card col m-1 p-2">
+						<div class="card-body">
+							<h5>Chart 4</h5>
+							<p>[Tickets]</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row gy-2">
+			<div class="cols mt-5 bg-secondary">
+				<div class="card col m-1 p-2">
+					<div class="card-body" style="height:600px;overflow-y:auto;">
+						<h5>Project: Tickets vs Developers</h5>
+						<!-- HTML -->
+						<div id="plotlyChart"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr />
+	<div class="mt-5 ">
+		<div class="row">
+			@* Projects Table *@
+			<div class="col">
+				<div class="bg-secondary">
+					<div class="card m-1 p-2">
+						<div class="card-header">
+							<h2>Projects</h2>
+						</div>
+						<div class="card-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Description</th>
+										<th>End Date</th>
+										<th>Priority</th>
+									</tr>
+								</thead>
+								@foreach (Project project in Model.Projects!.OrderByDescending(d => d.EndDate))
+								{
+									@if (!project.Archived)
+									{
+										<tr>
+											<td><a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">@project.Name</a></td>
+											<td>@project.Description</td>
+											<td>@project.EndDate.DateTime.ToString("MM/dd/yyyy")</td>
+											<td>@project.ProjectPriorty?.Name</td>
+										</tr>
+									}
+								}
+							</table>
+						</div>
+						<div class="card-footer">
+						</div>
+					</div>
+				</div>
+			</div>
+			@* Tickets Table *@
+			<div class="col">
+				<div class="bg-secondary">
+					<div class="card m-1 p-2">
+						<div class="card-header">
+							<h2>Tickets</h2>
+						</div>
+						<div class="card-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>Title</th>
+										<th>Status</th>
+										<th>Priority</th>
+										<th>Date</th>
+									</tr>
+								</thead>
+								@foreach (Ticket ticket in Model.Tickets!.OrderByDescending(d => d.CreatedDate))
+								{
+									@if (!(ticket.Archived || ticket.ArchivedByProject) 
+										&& ticket.DeveloperUserId == btUser.Id 
+										|| (User.IsInRole(nameof(BTRole.Admin)) || User.IsInRole(nameof(BTRole.ProjectManager)))
+										)
+									{
+										<tr>
+											<td><a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">@ticket.Title</a></td>
+											<td>@ticket.TicketStatus!.Name</td>
+											<td>@ticket.TicketPriority!.Name</td>
+											<td>@ticket.CreatedDate.DateTime.ToString("MM/dd/yyyy")</td>
+										</tr>
+									}
+								}
+							</table>
+						</div>
+						<div class="card-footer">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2 ">
+				<div class="bg-dark">
+					<div class="card m-1 p-2">
+						<div class="card-header">
+							<h2>Members</h2>
+							<hr />
+						</div>
+						<div class="card-body" style="overflow-y:auto;height:600px;background-color:antiquewhite">
+							<ul class="right_chat list-unstyled mb-0">
+								@foreach(BTUser member in Model.Members!)
+								{
+									<li>
+										<span class="">@member.FullName</span>
+										<span class="" style="font-size:x-small">[@((await UserManager.GetRolesAsync(member)).FirstOrDefault())]</span>
+									</li>
+								}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@section scripts{
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<script src='https://cdn.plot.ly/plotly-2.4.2.min.js'></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<!-- Google -->
+<script type="text/javascript">
+	google.load("visualization", "1", { packages: ["corechart"] });
+	google.setOnLoadCallback(drawChart);
+	function drawChart() {
+		$.ajax({
+			type: "POST",
+			url: "/Home/GglProjectPriority",
+			data: '{}',
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (result) {
+				var data = google.visualization.arrayToDataTable(result);
+
+				//3D Pie
+				var options = {
+					title: 'Project Priority',
+					is3D: true,
+					chartArea: { left: 0,bottom: 15,width: '100%', height: '100%'},
+					legend: { position: 'bottom' }
+
+				};
+
+				var chart = new google.visualization.PieChart($("#chart3D")[0]);
+				chart.draw(data, options);
+			},
+			failure: function (rresult) {
+				alert(result.d);
+			},
+			error: function (result) {
+				alert(result.d);
+			}
+		});
+	}
+</script>
+<script type="text/javascript">
+	google.load("visualization", "1", { packages: ["corechart"] });
+	google.setOnLoadCallback(drawChart);
+	function drawChart() {
+		$.ajax({
+			type: "POST",
+			url: "/Home/GglProjectTickets",
+			data: '{}',
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (result) {
+				var data = google.visualization.arrayToDataTable(result);
+
+				//Donut
+				var options = {
+					title: 'Company Ticket Distribution',
+					pieHole: 0.3,
+					chartArea: { left: 0,bottom: 15,width: '100%', height: '100%'},
+					legend: { position: 'bottom' }
+				};
+				var chart = new google.visualization.PieChart($("#donut")[0]);
+				chart.draw(data, options);
+			},
+			failure: function (rresult) {
+				alert(result.d);
+			},
+			error: function (result) {
+				alert(result.d);
+			}
+		});
+	}
+</script>
+
+
+<!-- Morris -->
+<script>
+	var morrisDonutData = [{
+		label: "Low",
+		value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(BTTicketPriority.Low)).Count()
+	}, {
+		label: "Medium",
+		value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(BTTicketPriority.Medium)).Count()
+	}, {
+		label: "High",
+		value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(BTTicketPriority.High)).Count()
+	}, {
+		label: "Urgent",
+		value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(BTTicketPriority.Urgent)).Count()
+	}];
+
+
+	/*
+	Morris: Donut
+	*/
+	if ($('#morrisTicketPriority').get(0)) {
+		var donutChart = Morris.Donut({
+			resize: true,
+			element: 'morrisTicketPriority',
+			data: morrisDonutData,
+			colors: ['#0088cc', '#734ba9', '#E36159', '#ff993b']
+		});
+
+		donutChart.options.data.forEach(function(label, i) {
+			var legendItem = $('<span></span>').text( label['label'] + ": " +label['value']).prepend('<span>&nbsp;</span>');
+			legendItem.find('span')
+			  .css('backgroundColor', donutChart.options.colors[i])
+			  .css('width', '20px')
+			  .css('display', 'inline-block')
+			  .css('margin', '10px');
+			$('#legend').append(legendItem)
+		});
+	};
+</script>
+
+<!-- Ploty -->
+<script>
+	$.ajax({
+		type: "POST",
+		url: "/Home/PlotlyBarChart",
+		data: '{}',
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function (result) {
+			var data = result;
+
+			var layout = {barmode: 'group'};
+
+			Plotly.newPlot('plotlyChart', data, layout);
+			},
+			failure: function (result) {
+				alert(result.d);
+			},
+			error: function (result) {
+				alert(result.d);
+			}
+		});
+</script>
+}
