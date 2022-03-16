@@ -47,7 +47,7 @@ namespace BugTracker.Models
         [DisplayName("Ticket Type")]
         public virtual TicketType? TicketType { get; set; }
 
-        [DisplayName("Ticket Type")]
+        [DisplayName("Ticket Priority")]
         public virtual TicketPriority? TicketPriority { get; set; }
 
         [DisplayName("Ticket Status")]

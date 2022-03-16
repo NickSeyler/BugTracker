@@ -12,92 +12,41 @@
     BTUser btUser = await UserManager.GetUserAsync(User);
 }
 
-<h1>Archive</h1>
+<header class="page-header">
+	<h2>Archived Tickets</h2>
+</header>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<h1>Archived Tickets</h1>
+
+<table class="table table-bordered table-striped mb-0" id="datatable-tabletools">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Archived)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ArchivedByProject)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketPriority)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OwnerUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeveloperUser)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.Title)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th>@Html.DisplayNameFor(model => model.Project)</th>
+            <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+            <th>@Html.DisplayNameFor(model => model.UpdatedDate)</th>
+            <th>@Html.DisplayNameFor(model => model.TicketType)</th>
+            <th>@Html.DisplayNameFor(model => model.TicketPriority)</th>
+            <th>@Html.DisplayNameFor(model => model.TicketStatus)</th>
+            <th>@Html.DisplayNameFor(model => model.OwnerUser)</th>
+            <th>@Html.DisplayNameFor(model => model.DeveloperUser)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Archived)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ArchivedByProject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Project.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TicketType.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TicketPriority.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TicketStatus.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OwnerUser.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
-            </td>
+            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+            <td>@Html.DisplayFor(modelItem => item.Project!.Name)</td>
+            <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.UpdatedDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.TicketType!.Name)</td>
+            <td>@Html.DisplayFor(modelItem => item.TicketPriority!.Name)</td>
+            <td>@Html.DisplayFor(modelItem => item.TicketStatus!.Name)</td>
+            <td>@Html.DisplayFor(modelItem => item.OwnerUser!.FullName)</td>
+            <td>@Html.DisplayFor(modelItem => item.DeveloperUser!.FullName)</td>
             <td>
                 <a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@item.Id">Details</a>
                 @{
@@ -113,3 +62,20 @@
         }
     </tbody>
 </table>
+
+@section scripts{
+    <script src="~/template/vendor/select2/js/select2.js"></script>
+	<script src="~/template/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
+	<script src="~/template/vendor/datatables/media/js/dataTables.bootstrap5.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/dataTables.buttons.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.bootstrap4.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.html5.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.print.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/JSZip-2.5.0/jszip.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/pdfmake-0.1.32/pdfmake.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/pdfmake-0.1.32/vfs_fonts.js"></script>
+
+    <script src="~/template/js/examples/examples.datatables.default.js"></script>
+    <script src="~/template/js/examples/examples.datatables.row.with.details.js"></script>
+    <script src="~/template/js/examples/examples.datatables.tabletools.js"></script>
+}

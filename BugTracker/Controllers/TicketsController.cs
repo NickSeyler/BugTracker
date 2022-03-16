@@ -28,6 +28,7 @@ namespace BugTracker.Controllers
         private readonly IBTLookupService _lookupService;
         private readonly IBTFileService _fileService;
         private readonly IBTTicketHistoryService _ticketHistoryService;
+        private readonly IBTNotificationService _notificationService;
 
         public TicketsController(ApplicationDbContext context,
                                  UserManager<BTUser> userManager,
@@ -37,7 +38,8 @@ namespace BugTracker.Controllers
                                  IBTRolesService rolesService,
                                  IBTLookupService lookupService,
                                  IBTFileService fileService,
-                                 IBTTicketHistoryService ticketHistoryService)
+                                 IBTTicketHistoryService ticketHistoryService,
+                                 IBTNotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
@@ -48,6 +50,7 @@ namespace BugTracker.Controllers
             _lookupService = lookupService;
             _fileService = fileService;
             _ticketHistoryService = ticketHistoryService;
+            _notificationService = notificationService;
         }
 
         // GET: Tickets/MyTickets
@@ -139,6 +142,22 @@ namespace BugTracker.Controllers
                 try
                 {
                     await _ticketService.AssignTicketAsync(model.Ticket.Id, model.DeveloperID);
+
+                    if (model.Ticket.DeveloperUserId != null)
+                    {
+                        Notification devNotification = new()
+                        {
+                            TicketId = model.Ticket.Id,
+                            NotificationTypeId = (await _lookupService.LookupNotificationTypeIdAsync(nameof(BTNotificationType.Ticket))).Value,
+                            Title = "Ticket Updated",
+                            Message = $"Ticket: {model.Ticket.Title}, was updated by {btUser.FullName}",
+                            CreatedDate = DateTime.UtcNow,
+                            SenderId = btUser.Id,
+                            RecipientId = model.Ticket.DeveloperUserId
+                        };
+                        await _notificationService.AddNotificationAsync(devNotification);
+                        await _notificationService.SendEmailNotificationAsync(devNotification, "Ticket Updated");
+                    }
                 }
                 catch(Exception)
                 {
@@ -281,7 +300,28 @@ namespace BugTracker.Controllers
                     Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
                     await _ticketHistoryService.AddHistoryAsync(null!, newTicket, btUser.Id);
 
-                    //TODO: Ticket Notification
+                    BTUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+                    int companyId = User.Identity!.GetCompanyId()!;
+                    Notification notification = new()
+                    {
+                        TicketId = ticket.Id,
+                        Title = "New Ticket",
+                        Message = $"New Ticket: {ticket.Title}, was created by {btUser.FullName}",
+                        CreatedDate = DateTime.UtcNow,
+                        SenderId = btUser.Id,
+                        RecipientId = projectManager?.Id
+                    };
+                    if (projectManager != null)
+                    {
+                        await _notificationService.AddNotificationAsync(notification);
+                        await _notificationService.SendEmailNotificationAsync(notification, "New Ticket Added");
+                    }
+                    else
+                    {
+                        //Admin notification
+                        await _notificationService.AddNotificationAsync(notification);
+                        await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(BTRole.Admin));
+                    }
 
                     return RedirectToAction(nameof(AllTickets));
                 }
@@ -350,6 +390,49 @@ namespace BugTracker.Controllers
                     ticket.UpdatedDate = DateTime.UtcNow;
 
                     await _ticketService.UpdateTicketAsync(ticket);
+
+                    BTUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+                    int companyId = User.Identity!.GetCompanyId();
+                    Notification notification = new()
+                    {
+                        TicketId = ticket.Id,
+                        NotificationTypeId = (await _lookupService.LookupNotificationTypeIdAsync(nameof(BTNotificationType.Ticket))).Value,
+                        Title = "Ticket updated",
+                        Message = $"Ticket: {ticket.Title}, was updated by {btUser.FullName}",
+                        CreatedDate = DateTime.UtcNow,
+                        SenderId = btUser.Id,
+                        RecipientId = projectManager?.Id
+                    };
+
+                    // Notify PM or Admin
+                    if (projectManager != null)
+                    {
+                        await _notificationService.AddNotificationAsync(notification);
+                        await _notificationService.SendEmailNotificationAsync(notification, "Ticket Updated");
+                    }
+                    else
+                    {
+                        //Admin notification
+                        await _notificationService.AddNotificationAsync(notification);
+                        await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(BTRole.Admin));
+                    }
+
+                    //Notify Developer
+                    if (ticket.DeveloperUserId != null)
+                    {
+                        Notification devNotification = new()
+                        {
+                            TicketId = ticket.Id,
+                            NotificationTypeId = (await _lookupService.LookupNotificationTypeIdAsync(nameof(BTNotificationType.Ticket))).Value,
+                            Title = "Ticket Updated",
+                            Message = $"Ticket: {ticket.Title}, was updated by {btUser.FullName}",
+                            CreatedDate = DateTimeOffset.Now,
+                            SenderId = btUser.Id,
+                            RecipientId = ticket.DeveloperUserId
+                        };
+                        await _notificationService.AddNotificationAsync(devNotification);
+
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
