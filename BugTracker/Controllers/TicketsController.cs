@@ -305,6 +305,7 @@ namespace BugTracker.Controllers
                     Notification notification = new()
                     {
                         TicketId = ticket.Id,
+                        NotificationTypeId = (await _lookupService.LookupNotificationTypeIdAsync(nameof(BTNotificationType.Ticket))).Value,
                         Title = "New Ticket",
                         Message = $"New Ticket: {ticket.Title}, was created by {btUser.FullName}",
                         CreatedDate = DateTime.UtcNow,

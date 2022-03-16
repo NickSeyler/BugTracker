@@ -34,15 +34,24 @@ namespace BugTracker.Controllers
             return View();
         }
 
-        public IActionResult Default()
+        public async Task<IActionResult> Default()
         {
-            return View();
+            FullViewModel model = new();
+
+            int companyId = User.Identity!.GetCompanyId();
+
+            model.Company = await _companyInfoService.GetCompanyInfoByIdAsync(companyId);
+            model.Projects = await _companyInfoService.GetAllProjectsAsync(companyId);
+            model.Tickets = await _companyInfoService.GetAllTicketsAsync(companyId);
+            model.Members = await _companyInfoService.GetAllMembersAsync(companyId);
+
+            return View(model);
         }
 
         [Authorize]
         public async Task<IActionResult> Dashboard()
         {
-            DashboardViewModel model = new();
+            FullViewModel model = new();
 
             int companyId = User.Identity!.GetCompanyId();
 
