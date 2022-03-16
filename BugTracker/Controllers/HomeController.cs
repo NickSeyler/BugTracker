@@ -25,11 +25,11 @@ namespace BugTracker.Controllers
             _projectService = projectService;
         }
 
-        public IActionResult Index()
+        public IActionResult Landing()
         {
             if (User.Identity!.IsAuthenticated)
             {
-                return RedirectToAction("Dashboard");
+                return RedirectToAction("Default");
             }
             return View();
         }

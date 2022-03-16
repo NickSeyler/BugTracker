@@ -1,7 +1,16 @@
-﻿<!doctype html>
+﻿@using BugTracker.Models.Enums
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<BTUser> SignInManager
+@inject UserManager<BTUser> UserManager
+
+@{
+	BTUser btUser = await UserManager.GetUserAsync(User);
+}
+
+<!doctype html>
 <html class="fixed">
 	<head>
-
 		<!-- Basic -->
 		<meta charset="UTF-8">
 
@@ -39,11 +48,10 @@
 
 		<!-- Head Libs -->
 		<script src="~/template/vendor/modernizr/modernizr.js"></script>
-
 	</head>
 	<body>
-		<form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-</form>
+		<form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Landing", "Home", new { area = "" })">
+		</form>
 		<section class="body">
 
 			<!-- start: header -->
@@ -59,18 +67,8 @@
 
 				</div>
 
-				<!-- start: search & user box -->
+				<!-- user box -->
 				<div class="header-right">
-
-					<form action="pages-search-results.html" class="search nav-form">
-						<div class="input-group">
-							<input type="text" class="form-control" name="q" id="q" placeholder="Search...">
-							<button class="btn btn-default" type="submit"><i class="bx bx-search"></i></button>
-						</div>
-					</form>
-
-					<span class="separator"></span>
-
 					<ul class="notifications">
 						<li>
 							<a href="#" class="dropdown-toggle notification-icon" data-bs-toggle="dropdown">
@@ -234,14 +232,23 @@
 
 					<span class="separator"></span>
 
+					@if (SignInManager.IsSignedIn(User))
+					{
 					<div id="userbox" class="userbox">
 						<a href="#" data-bs-toggle="dropdown">
 							<figure class="profile-picture">
-								<img src="~/template/img/!logged-user.jpg" alt="Joseph Doe" class="rounded-circle" data-lock-picture="~/template/img/!logged-user.jpg" />
+								@if (btUser.AvatarData != null)
+								{
+									<img class="" src="data:image/*;base64,@(Convert.ToBase64String(btUser.AvatarData))" alt="" />
+								}
+								else
+								{
+									<img class="" style="width:30px;height:30px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
+								}
 							</figure>
-							<div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
-								<span class="name">John Doe Junior</span>
-								<span class="role">Administrator</span>
+							<div class="profile-info" data-lock-name="@btUser.FullName" data-lock-email="@btUser.Email">
+								<span class="name">@btUser.FullName</span>
+								<span class="role">[@((await UserManager.GetRolesAsync(btUser)).FirstOrDefault())]</span>
 							</div>
 
 							<i class="fa custom-caret"></i>
@@ -251,19 +258,44 @@
 							<ul class="list-unstyled mb-2">
 								<li class="divider"></li>
 								<li>
-									<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="bx bx-user-circle"></i> My Profile</a>
-								</li>
-								<li>
-									<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="bx bx-lock"></i> Lock Screen</a>
+									<a role="menuitem" tabindex="-1" class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><i class="bx bx-user-circle"></i> My Profile</a>
 								</li>
 								<li>
 									<a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutForm').submit();"><i class="bx bx-power-off"></i> Logout</a>
 								</li>
 							</ul>
 						</div>
+
 					</div>
-				</div>
-				<!-- end: search & user box -->
+					}
+					else
+					{
+					<div id="userbox" class="userbox">
+						<a href="#" data-bs-toggle="dropdown">
+
+							<div class="profile-info">
+								Register or Sign In
+							</div>
+
+							<i class="fa custom-caret"></i>
+						</a>
+
+						<div class="dropdown-menu">
+							<ul class="list-unstyled mb-2">
+								<li class="divider"></li>
+								<li>
+									<a role="menuitem" tabindex="-1" class="dropdown-item" asp-area="Identity" asp-page="/Account/Register"><i class="bx bx-pencil"></i>Register</a>
+								</li>
+								<li>
+									<a role="menuitem" tabindex="-1" class="dropdown-item" asp-area="Identity" asp-page="/Account/Login"><i class="bx bx-log-in"></i>Sign In</a>
+								</li>
+							</ul>
+						</div>
+
+					</div>
+					}
+			</div>
+				<!-- end: user box -->
 			</header>
 			<!-- end: header -->
 
@@ -286,684 +318,76 @@
 
 				                <ul class="nav nav-main">
 				                    <li>
-				                        <a class="nav-link" href="layouts-default.html">
+				                        <a asp-area="" asp-controller="Home" asp-action="Default">
 				                            <i class="bx bx-home-alt" aria-hidden="true"></i>
-				                            <span>Dashboard</span>
-				                        </a>                        
-				                    </li>
-				                    <li class="nav-parent">
-				                        <a class="nav-link" href="#">
-				                            <i class="bx bx-cart-alt" aria-hidden="true"></i>
-				                            <span>eCommerce</span>
-				                        </a>
-				                        <ul class="nav nav-children">
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-dashboard.html">
-				                                    Dashboard
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-products-list.html">
-				                                    Products List
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-products-form.html">
-				                                    Products Form
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-category-list.html">
-				                                    Categories List
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-category-form.html">
-				                                    Category Form
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-coupons-list.html">
-				                                    Coupons List
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-coupons-form.html">
-				                                    Coupons Form
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-orders-list.html">
-				                                    Orders List
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-orders-detail.html">
-				                                    Orders Detail
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-customers-list.html">
-				                                    Customers List
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ecommerce-customers-form.html">
-				                                    Customers Form
-				                                </a>
-				                            </li>
-				                        </ul>
-				                    </li>
-				                    <li>
-				                        <a class="nav-link" href="mailbox-folder.html">
-				                            <span class="float-end badge badge-primary">182</span>
-				                            <i class="bx bx-envelope" aria-hidden="true"></i>
-				                            <span>Mailbox</span>
-				                        </a>                        
-				                    </li>
-				                    <li class="nav-parent nav-expanded nav-active">
-				                        <a class="nav-link" href="#">
-				                            <i class="bx bx-layout" aria-hidden="true"></i>
-				                            <span>Layouts</span>
-				                        </a>
-				                        <ul class="nav nav-children">
-				                            <li>
-				                                <a class="nav-link" href="index.html">
-				                                    Landing Page
-				                                </a>
-				                            </li>
-				                            <li class="nav-active">
-				                                <a class="nav-link" href="layouts-default.html">
-				                                    Default
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="layouts-modern.html">
-				                                    Modern
-				                                </a>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a>
-				                                    Boxed
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-boxed.html">
-				                                            Static Header
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-boxed-fixed-header.html">
-				                                            Fixed Header
-				                                        </a>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a>
-				                                    Horizontal Menu Header
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-header-menu.html">
-				                                            Pills
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-header-menu-stripe.html">
-				                                            Stripe
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-header-menu-top-line.html">
-				                                            Top Line
-				                                        </a>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="layouts-dark.html">
-				                                    Dark
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="layouts-dark-header.html">
-				                                    Dark Header
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="layouts-two-navigations.html">
-				                                    Two Navigations
-				                                </a>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a>
-				                                    Tab Navigation
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-tab-navigation-dark.html">
-				                                            Tab Navigation Dark
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-tab-navigation.html">
-				                                            Tab Navigation Light
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-tab-navigation-boxed.html">
-				                                            Tab Navigation Boxed
-				                                        </a>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="layouts-light-sidebar.html">
-				                                    Light Sidebar
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="layouts-left-sidebar-collapsed.html">
-				                                    Left Sidebar Collapsed
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="layouts-left-sidebar-scroll.html">
-				                                    Left Sidebar Scroll
-				                                </a>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a>
-				                                    Left Sidebar Big Icons
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-left-sidebar-big-icons.html">
-				                                            Left Sidebar Big Icons Dark
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-left-sidebar-big-icons-light.html">
-				                                            Left Sidebar Big Icons Light
-				                                        </a>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a>
-				                                    Left Sidebar Panel
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-left-sidebar-panel.html">
-				                                            Left Sidebar Panel Dark
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-left-sidebar-panel-light.html">
-				                                            Left Sidebar Panel Light
-				                                        </a>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a>
-				                                    Left Sidebar Sizes
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-sidebar-sizes-xs.html">
-				                                            Left Sidebar XS
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-sidebar-sizes-sm.html">
-				                                            Left Sidebar SM
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="layouts-sidebar-sizes-md.html">
-				                                            Left Sidebar MD
-				                                        </a>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="layouts-square-borders.html">
-				                                    Square Borders
-				                                </a>
-				                            </li>
-				                        </ul>
-				                    </li>
-				                    <li class="nav-parent">
-				                        <a class="nav-link" href="#">
-				                            <i class="bx bx-file" aria-hidden="true"></i>
-				                            <span>Pages</span>
-				                        </a>
-				                        <ul class="nav nav-children">
-				                            <li>
-				                                <a class="nav-link" href="pages-signup.html">
-				                                    Sign Up
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-signin.html">
-				                                    Sign In
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-recover-password.html">
-				                                    Recover Password
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-lock-screen.html">
-				                                    Locked Screen
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-user-profile.html">
-				                                    User Profile
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-session-timeout.html">
-				                                    Session Timeout
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-calendar.html">
-				                                    Calendar
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-timeline.html">
-				                                    Timeline
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-media-gallery.html">
-				                                    Media Gallery
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-invoice.html">
-				                                    Invoice
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-blank.html">
-				                                    Blank Page
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-404.html">
-				                                    404
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-500.html">
-				                                    500
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-log-viewer.html">
-				                                    Log Viewer
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="pages-search-results.html">
-				                                    Search Results
-				                                </a>
-				                            </li>
-				                        </ul>
-				                    </li>
-				                    <li class="nav-parent">
-				                        <a class="nav-link" href="#">
-				                            <i class="bx bx-cube" aria-hidden="true"></i>
-				                            <span>UI Elements</span>
-				                        </a>
-				                        <ul class="nav nav-children">
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-typography.html">
-				                                    Typography
-				                                </a>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a class="nav-link" href="#">
-				                                    Icons <span class="mega-sub-nav-toggle toggled float-end" data-toggle="collapse" data-target=".mega-sub-nav-sub-menu-1"></span>
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a class="nav-link" href="ui-elements-icons-elusive.html">
-				                                            Elusive
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="ui-elements-icons-font-awesome.html">
-				                                            Font Awesome
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="ui-elements-icons-line-icons.html">
-				                                            Line Icons
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="ui-elements-icons-meteocons.html">
-				                                            Meteocons
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="ui-elements-icons-box-icons.html">
-				                                            Box Icons
-				                                        </a>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-tabs.html">
-				                                    Tabs
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-cards.html">
-				                                    Cards
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-widgets.html">
-				                                    Widgets
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-portlets.html">
-				                                    Portlets
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-buttons.html">
-				                                    Buttons
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-alerts.html">
-				                                    Alerts
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-notifications.html">
-				                                    Notifications
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-modals.html">
-				                                    Modals
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-lightbox.html">
-				                                    Lightbox
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-progressbars.html">
-				                                    Progress Bars
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-sliders.html">
-				                                    Sliders
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-carousels.html">
-				                                    Carousels
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-accordions.html">
-				                                    Accordions
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-toggles.html">
-				                                    Toggles
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-nestable.html">
-				                                    Nestable
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-tree-view.html">
-				                                    Tree View
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-scrollable.html">
-				                                    Scrollable
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-grid-system.html">
-				                                    Grid System
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-charts.html">
-				                                    Charts
-				                                </a>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a class="nav-link" href="#">
-				                                    Animations <span class="mega-sub-nav-toggle toggled float-end" data-toggle="collapse" data-target=".mega-sub-nav-sub-menu-2"></span>
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a class="nav-link" href="ui-elements-animations-appear.html">
-				                                            Appear
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="ui-elements-animations-hover.html">
-				                                            Hover
-				                                        </a>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a class="nav-link" href="#">
-				                                    Loading <span class="mega-sub-nav-toggle toggled float-end" data-toggle="collapse" data-target=".mega-sub-nav-sub-menu-3"></span>
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a class="nav-link" href="ui-elements-loading-overlay.html">
-				                                            Overlay
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a class="nav-link" href="ui-elements-loading-progress.html">
-				                                            Progress
-				                                        </a>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="ui-elements-extra.html">
-				                                    Extra
-				                                </a>
-				                            </li>
-				                        </ul>
-				                    </li>
-				                    <li class="nav-parent">
-				                        <a class="nav-link" href="#">
-				                            <i class="bx bx-map" aria-hidden="true"></i>
-				                            <span>Maps</span>
-				                        </a>
-				                        <ul class="nav nav-children">
-				                            <li>
-				                                <a class="nav-link" href="maps-google-maps.html">
-				                                    Basic
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="maps-google-maps-builder.html">
-				                                    Map Builder
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="maps-vector.html">
-				                                    Vector
-				                                </a>
-				                            </li>
-				                        </ul>
-				                    </li>
-				                    <li>
-				                        <a class="nav-link" href="extra-ajax-made-easy.html">
-				                            <i class="bx bx-loader-circle" aria-hidden="true"></i>
-				                            <span>Ajax</span>
-				                        </a>                        
-				                    </li>
-				                    <li class="nav-parent">
-				                        <a class="nav-link" href="#">
-				                            <i class="bx bx-detail" aria-hidden="true"></i>
-				                            <span>Forms</span>
-				                        </a>
-				                        <ul class="nav nav-children">
-				                            <li>
-				                                <a class="nav-link" href="forms-basic.html">
-				                                    Basic
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="forms-advanced.html">
-				                                    Advanced
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="forms-validation.html">
-				                                    Validation
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="forms-layouts.html">
-				                                    Layouts
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="forms-wizard.html">
-				                                    Wizard
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="forms-code-editor.html">
-				                                    Code Editor
-				                                </a>
-				                            </li>
-				                        </ul>
-				                    </li>
-				                    <li class="nav-parent">
-				                        <a class="nav-link" href="#">
-				                            <i class="bx bx-table" aria-hidden="true"></i>
-				                            <span>Tables</span>
-				                        </a>
-				                        <ul class="nav nav-children">
-				                            <li>
-				                                <a class="nav-link" href="tables-basic.html">
-				                                    Basic
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="tables-advanced.html">
-				                                    Advanced
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="tables-responsive.html">
-				                                    Responsive
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="tables-editable.html">
-				                                    Editable
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="tables-ajax.html">
-				                                    Ajax
-				                                </a>
-				                            </li>
-				                            <li>
-				                                <a class="nav-link" href="tables-pricing.html">
-				                                    Pricing
-				                                </a>
-				                            </li>
-				                        </ul>
-				                    </li>
-				                    <li class="nav-parent">
-				                        <a class="nav-link" href="#">
-				                            <i class="bx bx-collection" aria-hidden="true"></i>
-				                            <span>Menu Levels</span>
-				                        </a>
-				                        <ul class="nav nav-children">
-				                            <li>
-				                                <a>
-				                                    First Level
-				                                </a>
-				                            </li>
-				                            <li class="nav-parent">
-				                                <a class="nav-link" href="#">
-				                                    Second Level
-				                                </a>
-				                                <ul class="nav nav-children">
-				                                    <li>
-				                                        <a>
-				                                            Second Level Link #1
-				                                        </a>
-				                                    </li>
-				                                    <li>
-				                                        <a>
-				                                            Second Level Link #2
-				                                        </a>
-				                                    </li>
-				                                    <li class="nav-parent">
-				                                        <a class="nav-link" href="#">
-				                                            Third Level
-				                                        </a>
-				                                        <ul class="nav nav-children">
-				                                            <li>
-				                                                <a>
-				                                                    Third Level Link #1
-				                                                </a>
-				                                            </li>
-				                                            <li>
-				                                                <a>
-				                                                    Third Level Link #2
-				                                                </a>
-				                                            </li>
-				                                        </ul>
-				                                    </li>
-				                                </ul>
-				                            </li>
-				                        </ul>
-				                    </li>
-				                    <li>
-				                        <a class="nav-link" href="http://themeforest.net/item/porto-responsive-html5-template/4106987?ref=Okler">
-				                            <i class="bx bx-window-alt" aria-hidden="true"></i>
-				                            <span>Front-End <em class="not-included">(Not Included)</em></span>
-				                        </a>                        
-				                    </li>
-				                    <li>
-				                        <a class="nav-link" href="https://www.okler.net/forums/topic/porto-admin-changelog/">
-				                            <i class="bx bx-book-alt" aria-hidden="true"></i>
-				                            <span>Changelog</span>
+				                            <span>Home</span>
 				                        </a>                        
 				                    </li>
 
-				                </ul>
+									<li>
+				                        <a asp-area="" asp-controller="Home" asp-action="Dashboard">
+				                            <i class="bx bx-desktop" aria-hidden="true"></i>
+				                            <span>Dashboard</span>
+				                        </a>                        
+				                    </li>
+				                    
+				                    <li>
+				                        <a asp-area="" asp-controller="Notifications" asp-action="Index">
+				                            <span class="float-end badge badge-primary">182</span>
+				                            <i class="bx bx-envelope" aria-hidden="true"></i>
+				                            <span>Notifications</span>
+				                        </a>                        
+				                    </li>
+
+				                    <li class="nav-parent">
+				                        <a class="nav-link" href="#">
+				                            <i class="bx bx-cube" aria-hidden="true"></i>
+				                            <span>Projects</span>
+				                        </a>
+				                        <ul class="nav nav-children">
+											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="Create">New project...</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="MyProjects">My Projects</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="AllProjects">All Projects</a></li>
+											@if (User.IsInRole(nameof(BTRole.Admin)) || User.IsInRole(nameof(BTRole.ProjectManager)))
+											{
+											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="ArchivedProjects">Archived Projects</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="UnassignedProjects">Unassigned Projects</a></li>
+											}
+				                        </ul>
+				                    </li>
+
+									<li class="nav-parent">
+				                        <a class="nav-link" href="#">
+				                            <i class="bx bx-clipboard" aria-hidden="true"></i>
+				                            <span>Tickets</span>
+				                        </a>
+				                        <ul class="nav nav-children">
+											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="Create">New ticket...</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="MyTickets">My Tickets</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="AllTickets">All Tickets</a></li>
+											@if (User.IsInRole(nameof(BTRole.Admin)) || User.IsInRole(nameof(BTRole.ProjectManager)))
+											{
+											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="ArchivedTickets">Archived Tickets</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="UnassignedTickets">Unassigned Tickets</a></li>
+											}
+									</ul>
+				                    </li>
+
+									@if (User.IsInRole("Admin"))
+									{
+									<li class="nav-parent">
+										<a class="nav-link" href="#">
+											<i class="bx bx-wrench" aria-hidden="true"></i>
+											<span>Admin</span>
+										</a>
+										<ul class="nav nav-children">
+											<li><a class="dropdown-item" asp-area="" asp-controller="UserRoles" asp-action="ManageUserRoles">Manage Roles</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Invites" asp-action="Create">Invite User</a></li>
+										</ul>
+									</li>
+									}
+
+								</ul>
 				            </nav>
 
 				            <hr class="separator" />
@@ -1044,74 +468,6 @@
 					@RenderBody()
 				</section>
 			</div>
-
-			<aside id="sidebar-right" class="sidebar-right">
-				<div class="nano">
-					<div class="nano-content">
-						<a href="#" class="mobile-close d-md-none">
-							Collapse <i class="fas fa-chevron-right"></i>
-						</a>
-
-						<div class="sidebar-right-wrapper">
-
-							<div class="sidebar-widget widget-calendar">
-								<h6>Upcoming Tasks</h6>
-								<div data-plugin-datepicker data-plugin-skin="dark"></div>
-
-								<ul>
-									<li>
-										<time datetime="2021-04-19T00:00+00:00">04/19/2021</time>
-										<span>Company Meeting</span>
-									</li>
-								</ul>
-							</div>
-
-							<div class="sidebar-widget widget-friends">
-								<h6>Friends</h6>
-								<ul>
-									<li class="status-online">
-										<figure class="profile-picture">
-											<img src="~/template/img/!sample-user.jpg" alt="Joseph Doe" class="rounded-circle">
-										</figure>
-										<div class="profile-info">
-											<span class="name">Joseph Doe Junior</span>
-											<span class="title">Hey, how are you?</span>
-										</div>
-									</li>
-									<li class="status-online">
-										<figure class="profile-picture">
-											<img src="~/template/img/!sample-user.jpg" alt="Joseph Doe" class="rounded-circle">
-										</figure>
-										<div class="profile-info">
-											<span class="name">Joseph Doe Junior</span>
-											<span class="title">Hey, how are you?</span>
-										</div>
-									</li>
-									<li class="status-offline">
-										<figure class="profile-picture">
-											<img src="~/template/img/!sample-user.jpg" alt="Joseph Doe" class="rounded-circle">
-										</figure>
-										<div class="profile-info">
-											<span class="name">Joseph Doe Junior</span>
-											<span class="title">Hey, how are you?</span>
-										</div>
-									</li>
-									<li class="status-offline">
-										<figure class="profile-picture">
-											<img src="~/template/img/!sample-user.jpg" alt="Joseph Doe" class="rounded-circle">
-										</figure>
-										<div class="profile-info">
-											<span class="name">Joseph Doe Junior</span>
-											<span class="title">Hey, how are you?</span>
-										</div>
-									</li>
-								</ul>
-							</div>
-
-						</div>
-					</div>
-				</div>
-			</aside>
 
 		</section>
 
