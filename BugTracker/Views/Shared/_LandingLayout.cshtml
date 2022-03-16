@@ -2,41 +2,118 @@
 @inject SignInManager<BTUser> SignInManager
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BugTracker</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-</head>
-<body>
-    <div class="container-fluid overflow-hidden">
-        <div class="row vh-100 overflow-auto">
-            <div class="col-12 col-sm-3 col-xl-2 px-sm-2 px-0 bg-dark d-flex sticky-top">
-                <div class="d-flex flex-sm-column flex-row flex-grow-1 align-items-center align-items-sm-start px-3 pt-2 text-white">
-                    <a href="/" class="d-flex align-items-center pb-sm-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                        <span class="fs-5">B<span class="d-none d-sm-inline">ugTracker</span></span>
-                    </a>
-                </div>
-            </div>
-            <div class="col d-flex flex-column h-100">
-                <main class="row">
-                    @RenderBody()
-                </main>
-                <footer class="row bg-light py-4 mt-auto">
-                    <div class="container">
-                        &copy; 2021 - BugTracker - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </div>
-                </footer>
-            </div>
-        </div>
-    </div>
+<html class="fixed" lang="en">
+	<head>
+		<!-- Basic -->
+		<meta charset="UTF-8">
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
+		<title>Default Layout | Porto Admin - Responsive HTML5 Template</title>
+		<meta name="keywords" content="HTML5 Admin Template" />
+		<meta name="description" content="Porto Admin - Responsive HTML5 Template">
+		<meta name="author" content="okler.net">
+
+		<!-- Mobile Metas -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+		<!-- Web Fonts  -->
+		<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+		<!-- Vendor CSS -->
+		<link rel="stylesheet" href="~/template/vendor/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="~/template/vendor/animate/animate.compat.css">
+		<link rel="stylesheet" href="~/template/vendor/font-awesome/css/all.min.css" />
+		<link rel="stylesheet" href="~/template/vendor/boxicons/css/boxicons.min.css" />
+		<link rel="stylesheet" href="~/template/vendor/magnific-popup/magnific-popup.css" />
+		<link rel="stylesheet" href="~/template/vendor/bootstrap-datepicker/css/bootstrap-datepicker3.css" />
+		<link rel="stylesheet" href="~/template/vendor/jquery-ui/jquery-ui.css" />
+		<link rel="stylesheet" href="~/template/vendor/jquery-ui/jquery-ui.theme.css" />
+		<link rel="stylesheet" href="~/template/vendor/bootstrap-multiselect/css/bootstrap-multiselect.css" />
+		<link rel="stylesheet" href="~/template/vendor/morris/morris.css" />
+
+		<!-- Theme CSS -->
+		<link rel="stylesheet" href="~/template/css/theme.css" />
+
+		<!-- Skin CSS -->
+		<link rel="stylesheet" href="~/template/css/skins/default.css" />
+
+		<!-- Theme Custom CSS -->
+		<link rel="stylesheet" href="~/template/css/custom.css">
+
+		<!-- Head Libs -->
+		<script src="~/template/vendor/modernizr/modernizr.js"></script>
+	</head>
+	<body>
+		<div class="container-fluid overflow-hidden">
+			<div class="row vh-100 overflow-auto">
+				<div class="col-12 col-sm-3 col-xl-2 px-sm-2 px-0 bg-dark d-flex sticky-top">
+					<div class="d-flex flex-sm-column flex-row flex-grow-1 align-items-center align-items-sm-start px-3 pt-2 text-white">
+						<a href="/" class="d-flex align-items-center pb-sm-3 mb-md-0 me-md-auto text-white text-decoration-none">
+							<span class="fs-5">B<span class="d-none d-sm-inline">ugTracker</span></span>
+						</a>
+					</div>
+				</div>
+				<div class="col d-flex flex-column h-100">
+					<section role="main" class="content-body">
+						@RenderBody()
+					</section>
+					<footer class="row bg-light py-4 mt-auto">
+						<div class="container">
+							&copy; 2021 - BugTracker - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+						</div>
+					</footer>
+				</div>
+			</div>
+		</div>
+
+		<!-- Vendor -->
+		<script src="~/template/vendor/jquery/jquery.js"></script>
+		<script src="~/template/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+		<script src="~/template/vendor/popper/umd/popper.min.js"></script>
+		<script src="~/template/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<script src="~/template/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+		<script src="~/template/vendor/common/common.js"></script>
+		<script src="~/template/vendor/nanoscroller/nanoscroller.js"></script>
+		<script src="~/template/vendor/magnific-popup/jquery.magnific-popup.js"></script>
+		<script src="~/template/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+		<!-- Specific Page Vendor -->
+		<script src="~/template/vendor/jquery-ui/jquery-ui.js"></script>
+		<script src="~/template/vendor/jqueryui-touch-punch/jquery.ui.touch-punch.js"></script>
+		<script src="~/template/vendor/jquery-appear/jquery.appear.js"></script>
+		<script src="~/template/vendor/bootstrapv5-multiselect/js/bootstrap-multiselect.js"></script>
+		<script src="~/template/vendor/jquery.easy-pie-chart/jquery.easypiechart.js"></script>
+		<script src="~/template/vendor/flot/jquery.flot.js"></script>
+		<script src="~/template/vendor/flot.tooltip/jquery.flot.tooltip.js"></script>
+		<script src="~/template/vendor/flot/jquery.flot.pie.js"></script>
+		<script src="~/template/vendor/flot/jquery.flot.categories.js"></script>
+		<script src="~/template/vendor/flot/jquery.flot.resize.js"></script>
+		<script src="~/template/vendor/jquery-sparkline/jquery.sparkline.js"></script>
+		<script src="~/template/vendor/raphael/raphael.js"></script>
+		<script src="~/template/vendor/morris/morris.js"></script>
+		<script src="~/template/vendor/gauge/gauge.js"></script>
+		<script src="~/template/vendor/snap.svg/snap.svg.js"></script>
+		<script src="~/template/vendor/liquid-meter/liquid.meter.js"></script>
+		<script src="~/template/vendor/jqvmap/jquery.vmap.js"></script>
+		<script src="~/template/vendor/jqvmap/data/jquery.vmap.sampledata.js"></script>
+		<script src="~/template/vendor/jqvmap/maps/jquery.vmap.world.js"></script>
+		<script src="~/template/vendor/jqvmap/maps/continents/jquery.vmap.africa.js"></script>
+		<script src="~/template/vendor/jqvmap/maps/continents/jquery.vmap.asia.js"></script>
+		<script src="~/template/vendor/jqvmap/maps/continents/jquery.vmap.australia.js"></script>
+		<script src="~/template/vendor/jqvmap/maps/continents/jquery.vmap.europe.js"></script>
+		<script src="~/template/vendor/jqvmap/maps/continents/jquery.vmap.north-america.js"></script>
+		<script src="~/template/vendor/jqvmap/maps/continents/jquery.vmap.south-america.js"></script>
+
+		<!-- Theme Base, Components and Settings -->
+		<script src="~/template/js/theme.js"></script>
+
+		<!-- Theme Custom -->
+		<script src="~/template/js/custom.js"></script>
+
+		<!-- Theme Initialization Files -->
+		<script src="~/template/js/theme.init.js"></script>
+
+		<!-- Examples -->
+		<script src="~/template/js/examples/examples.dashboard.js"></script>
+		@RenderSection("scripts", required: false)
+	</body>
 </html>
