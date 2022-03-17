@@ -15,19 +15,21 @@
     BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.Id);
 }
 
-<h1>Details</h1>
+<header class="page-header">
+	<h2>Details</h2>
+</header>
+
+<h1>@Model.Name</h1>
 
 <div>
     <div class="container-fluid">
         <div class="row gy-2">
 
             <div class="col-md-12 col">
-                <div class="row col-cols-2 mt-5 bg-secondary">
+                <div class="row col-cols-2 mt-5">
 
                     <div class="card col m-1 p-2">
-                        <div class="body">
-
-                            <h5>@Model.Name</h5>
+                        <div class="card-body">
 
                             <p>@Model.Description</p>
 
@@ -50,7 +52,7 @@
                     </div>
 
                     <div class="card col m-1 p-2">
-                        <div class="body">
+                        <div class="card-body">
                             <ul class=" list-unstyled basic-list">
                                 <li>Start Date: <span class="">@Model.StartDate.DateTime.ToString("MMMM dd, yyyy")</span></li>
                                 <li>Deadline: <span class="">@Model.EndDate.DateTime.ToString("MMMM dd, yyyy")</span></li>
@@ -71,15 +73,13 @@
             </div>
 
             <div class="col-md-4 col mt-5 ">
-                <div class="bg-secondary">
+                <div class="card-header">
+                    <h3>Project Manager</h3>
+                </div>
+                <div class="card-body">
                     <div class="card m-1 p-2">
 
-                        <div class="header">
-                            <h2>Project Manager</h2>
-                            <hr />
-                        </div>
-
-                        <div class="body" style="overflow-y:auto;height:300px;">
+                        <div style="overflow-y:auto;height:300px;">
 
                             @if(projectManager != null)
                             {
@@ -124,15 +124,13 @@
             </div>
 
             <div class="col-md-4 col mt-5 ">
-                <div class="bg-secondary">
+                <div class="card-header">
+                    <h3>Project Team</h3>
+                </div>
+                <div class="card-body">
                     <div class="card m-1 p-2">
 
-                        <div class="header">
-                            <h2>Project Team</h2>
-                            <hr />
-                        </div>
-
-                        <div class="body" style="overflow-y:auto;height:300px;">
+                        <div style="overflow-y:auto;height:300px;">
                             <ul class="right_chat list-unstyled mb-0">
                                 @foreach (BTUser member in await ProjectService.GetAllProjectMembersExceptPMAsync(Model.Id))
                                 {
@@ -156,29 +154,31 @@
                 </div>
             </div>
 
-            <div class="col-md-4 col mt-5 ">
-                <div class="bg-dark">
+            <div class="card col-md-4 col mt-5 ">
+                <div class="card-header">
+                    <h3>Project Activity</h3>
+                </div>
+                <div class="card-body">
                     <div class="card m-1 p-2">
-
-                        <div class="header">
-                            <h2>Project Activity</h2>
-                            <hr />
-                        </div>
-
-                        <div class="body" style="overflow-y:auto;height:300px;background-color:antiquewhite">
+                        <div style="overflow-y:auto;height:300px;background-color:antiquewhite">
                             @* Project Activity loop *@
+                            @if (!(await HistoryService.GetProjectTicketsHistoriesAsync(Model.Id, btUser.CompanyId)).Any())
+                            {
+                                <span>No Ticket History</span>
+                            }
                             @foreach (TicketHistory history in await HistoryService.GetProjectTicketsHistoriesAsync(Model.Id, btUser.CompanyId))
                             {
+                                <span class="date">@history.CreatedDate.ToString("dd MMM yyyy")</span>
+                                <h6>@history.Description</h6>
+                                <span>By: <a href="" title="@history.User!.FullName">@history.User.FullName</a></span>
+                                @if(history.PropertyName == "")
+                                {
                                 <div class="">
-                                    <span class="date">@history.CreatedDate.ToString("dd MMM yyyy")</span>
-                                    <h6>@history.Description</h6>
-                                    <span>By: <a href="" title="@history.User!.FullName">@history.User.FullName</a></span>
-                                    <div class="">
-                                        <p>The ticket <b>@history.PropertyName</b>  was edited</p>
-                                        <p>@($"Previous {history.PropertyName}:  {history.OldValue}")</p>
-                                        <p>@($"Current {history.PropertyName}:  {history.NewValue}")</p>
-                                    </div>
+                                    <p>The ticket <b>@history.PropertyName</b>  was edited</p>
+                                    <p>@($"Previous {history.PropertyName}:  {history.OldValue}")</p>
+                                    <p>@($"Current {history.PropertyName}:  {history.NewValue}")</p>
                                 </div>
+                                }
                             }
                         </div>
 
@@ -187,14 +187,12 @@
             </div>
 
             <div class="col-md-12 col">
-                <div class="mt-5 bg-secondary">
+                <div class="mt-5">
                     <div class="card m-1 p-2">
-
-                        <div class="header">
-                            <h2>Tickets</h2>
+                        <div class="card-header">
+                            <h3>Tickets</h3>
                         </div>
-
-                        <div class="body">
+                        <div class="card-body">
                             <div class="table-responsive" style="overflow-y:auto;height:600px;">
                                 <table class="table table-hover">
                                     <thead class="">
@@ -227,23 +225,38 @@
                                             </td>
                                             @if (ticket.TicketStatus?.Name == "New")
                                             {
-                                            <td><span class="badge-success">@ticket.TicketStatus.Name </span></td>
+                                            <td><span class="badge badge-success">@ticket.TicketStatus.Name </span></td>
                                             }
                                             else
                                             {
-                                            <td><span class="badge-primary">@ticket.TicketStatus?.Name </span></td>
+                                            <td><span class="badge badge-primary">@ticket.TicketStatus?.Name </span></td>
                                             }
-                                            <td><span class="badg">@ticket.TicketPriority?.Name </span></td>
+                                            @if (ticket.TicketPriority?.Name == nameof(BTTicketPriority.Low))
+							                {
+								                <td><span class="badge badge-success">@ticket.TicketPriority?.Name</span></td>
+							                }
+							                else if (ticket.TicketPriority?.Name == nameof(BTTicketPriority.Medium))
+							                {
+								                <td><span class="badge badge-warning">@ticket.TicketPriority?.Name</span></td>
+							                }
+							                else if (ticket.TicketPriority?.Name == nameof(BTTicketPriority.High))
+							                {
+								                <td><span class="badge badge-danger">@ticket.TicketPriority?.Name</span></td>
+							                }
+							                else if (ticket.TicketPriority?.Name == nameof(BTTicketPriority.Urgent))
+							                {
+								                <td><span class="badge badge-dark">@ticket.TicketPriority?.Name</span></td>
+							                }
                                             <td>@ticket.CreatedDate.ToString("MM-dd-yyyy")</td>
                                             <td>
-                                                <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i></a>
+                                                <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fas fa-align-justify"></i></a>
                                                 @if (ticket.DeveloperUserId == btUser.Id || ticket.OwnerUserId == btUser.Id || (projectManager?.Id == btUser.Id) || User.IsInRole(nameof(BTRole.Admin)))
                                                 {
-                                                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-pencil"></i></a>
+                                                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fas fa-clipboard-list"></i></a>
                                                 }
                                                 @if (User.IsInRole("Admin") || (projectManager?.Id == btUser.Id))
                                                 {
-                                                <a class="btn btn-sm btn-outline-danger"><i class="fs-5 bi-archive"></i></a>
+                                                <a class="btn btn-sm btn-outline-danger" asp-action="Archive" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fas fa-trash"></i></a>
                                                 }
                                             </td>
                                         </tr>

@@ -15,7 +15,7 @@
 	@* User Info *@
 	@if (btUser.AvatarData != null)
 	{
-		<img class="" src="data:image/*;base64,@(Convert.ToBase64String(btUser.AvatarData))" alt="" />
+		<img class="" style="width:30px;height:30px;" src="data:image/*;base64,@(Convert.ToBase64String(btUser.AvatarData))" alt="" />
 	}
 	else
 	{
@@ -29,14 +29,14 @@
 
 
 <div>
-	<div classxfont-weighteighteightgetainer-fluid">
+	<div>
 		<div class="row mt-2">
 			<div class="col-lg-3 col-md-6 col-sm-6">
 				<a asp-action="AllProjects" asp-controller="Projects" style="text-decoration:none">
 					<div class="card text-center bg-info">
-						<div class="body">
+						<div>
 							<div class="p-15 text-light">
-								<h3>@Model.Projects!.Where(p => p.StartDate < DateTime.Now && p.EndDate > DateTime.Now).Count()</h3>
+								<h3>@Model.Projects!.Where(p => p.StartDate < DateTime.Now && p.EndDate > DateTime.Now && !p.Archived).Count()</h3>
 								<span>Active Projects</span>
 							</div>
 						</div>
@@ -46,7 +46,7 @@
 			<div class="col-lg-3 col-md-6 col-sm-6">
 				<a asp-action="AllTickets" asp-controller="Tickets" style="text-decoration:none">
 					<div class="card text-center bg-secondary">
-						<div class="body">
+						<div>
 							<div class="p-15 text-light">
 
 								<h3>@Model.Tickets!.Count()</h3>
@@ -58,7 +58,7 @@
 			</div>
 			<div class="col-lg-3 col-md-6 col-sm-6">
 				<div class="card text-center bg-warning">
-					<div class="body">
+					<div>
 						<div class="p-15 text-light">
 							<h3>@Model.Tickets!.Where(t => string.IsNullOrEmpty(t.DeveloperUserId)).Count()</h3>
 							<span>Unassigned Tickets</span>
@@ -68,7 +68,7 @@
 			</div>
 			<div class="col-lg-3 col-md-6 col-sm-6">
 				<div class="card text-center bg-dark">
-					<div class="body">
+					<div>
 						<div class="p-15 text-light">
 							<h3>
 								@(
@@ -85,7 +85,7 @@
 		</div>
 		<div class="row gy-2">
 			<div class="col-md-12 col">
-				<div class="row col-cols-4 mt-5 bg-secondary">
+				<div class="row col-cols-4 mt-5">
 					<div class="card col m-1 p-2">
 						<div class="card-body">
 							<h5>Projects by Priority</h5>
@@ -120,7 +120,7 @@
 			</div>
 		</div>
 		<div class="row gy-2">
-			<div class="cols mt-5 bg-secondary">
+			<div class="cols mt-5">
 				<div class="card col m-1 p-2">
 					<div class="card-body" style="height:600px;overflow-y:auto;">
 						<h5>Project: Tickets vs Developers</h5>
@@ -136,7 +136,7 @@
 		<div class="row">
 			@* Projects Table *@
 			<div class="col">
-				<div class="bg-secondary">
+				<div class="">
 					<div class="card m-1 p-2">
 						<div class="card-header">
 							<h2>Projects</h2>
@@ -172,7 +172,7 @@
 			</div>
 			@* Tickets Table *@
 			<div class="col">
-				<div class="bg-secondary">
+				<div class="">
 					<div class="card m-1 p-2">
 						<div class="card-header">
 							<h2>Tickets</h2>
@@ -210,7 +210,7 @@
 				</div>
 			</div>
 			<div class="col-md-2 ">
-				<div class="bg-dark">
+				<div>
 					<div class="card m-1 p-2">
 						<div class="card-header">
 							<h2>Members</h2>

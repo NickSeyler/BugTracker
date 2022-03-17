@@ -39,7 +39,8 @@ namespace BugTracker.Areas.Identity.Pages.Account
             IUserStore<BTUser> userStore,
             SignInManager<BTUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -47,6 +48,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -87,7 +89,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
             public string CompanyName { get; set; }
 
             [Required]
-            [Display(Name = "CompanyDescription")]
+            [Display(Name = "Company Description")]
             public string CompanyDescription { get; set; }
 
             /// <summary>
