@@ -12,6 +12,7 @@ using BugTracker.Services.Interfaces;
 using BugTracker.Extensions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace BugTracker.Controllers
 {

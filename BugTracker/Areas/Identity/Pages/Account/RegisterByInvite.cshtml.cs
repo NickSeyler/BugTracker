@@ -31,7 +31,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
         private readonly IUserStore<BTUser> _userStore;
         private readonly IUserEmailStore<BTUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly Services.Interfaces.IEmailSender _emailSender;
+        private readonly IEmailSender _emailSender;
         private readonly IBTInviteService _inviteService;
         private readonly IBTProjectService _projectService;
 
@@ -40,7 +40,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
             IUserStore<BTUser> userStore,
             SignInManager<BTUser> signInManager,
             ILogger<RegisterModel> logger,
-            Services.Interfaces.IEmailSender emailSender,
+            IEmailSender emailSender,
             IBTInviteService inviteService,
             IBTProjectService projectService)
         {
