@@ -134,7 +134,7 @@
 							<figure class="profile-picture">
 								@if (btUser.AvatarData != null)
 								{
-									<img class="" src="data:image/*;base64,@(Convert.ToBase64String(btUser.AvatarData))" alt="" />
+									<img class="" style="width:30px;height:30px;" src="data:image/*;base64,@(Convert.ToBase64String(btUser.AvatarData))" alt="@btUser.FullName" />
 								}
 								else
 								{
@@ -240,12 +240,21 @@
 				                            <span>Projects</span>
 				                        </a>
 				                        <ul class="nav nav-children">
-											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="Create">New project...</a></li>
+											@if (User.IsInRole(nameof(BTRole.Admin))) 
+											{
+											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="Create">NEW PROJECT</a></li>
+											}
+											@if (!User.IsInRole(nameof(BTRole.Admin)))
+											{
 											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="MyProjects">My Projects</a></li>
+											}
 											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="AllProjects">All Projects</a></li>
 											@if (User.IsInRole(nameof(BTRole.Admin)) || User.IsInRole(nameof(BTRole.ProjectManager)))
 											{
 											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="ArchivedProjects">Archived Projects</a></li>
+											}
+											@if (User.IsInRole(nameof(BTRole.Admin)))
+											{
 											<li><a class="dropdown-item" asp-area="" asp-controller="Projects" asp-action="UnassignedProjects">Unassigned Projects</a></li>
 											}
 				                        </ul>
@@ -253,11 +262,11 @@
 
 									<li class="nav-parent">
 				                        <a class="nav-link" href="#">
-				                            <i class="bx bx-clipboard" aria-hidden="true"></i>
+				                            <i class="bx bx-wrench" aria-hidden="true"></i>
 				                            <span>Tickets</span>
 				                        </a>
 				                        <ul class="nav nav-children">
-											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="Create">New ticket...</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="Create">NEW TICKET</a></li>
 											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="MyTickets">My Tickets</a></li>
 											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="AllTickets">All Tickets</a></li>
 											@if (User.IsInRole(nameof(BTRole.Admin)) || User.IsInRole(nameof(BTRole.ProjectManager)))
@@ -272,7 +281,7 @@
 									{
 									<li class="nav-parent">
 										<a class="nav-link" href="#">
-											<i class="bx bx-wrench" aria-hidden="true"></i>
+											<i class="bx bx-bug" aria-hidden="true"></i>
 											<span>Admin</span>
 										</a>
 										<ul class="nav nav-children">

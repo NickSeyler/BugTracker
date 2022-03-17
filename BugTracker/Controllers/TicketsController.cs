@@ -70,7 +70,7 @@ namespace BugTracker.Controllers
             List<Ticket> tickets = new();
             int companyId = User.Identity.GetCompanyId();
 
-            tickets = (await _ticketService.GetAllTicketsByCompanyAsync(companyId)).Where(t => !t.Archived).ToList();
+            tickets = (await _ticketService.GetAllTicketsByCompanyAsync(companyId)).Where(t => !t.Archived && !t.ArchivedByProject).ToList();
 
             return View(tickets);
         }

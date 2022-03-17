@@ -39,6 +39,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/MyProjects
+        [HttpGet]
         public async Task<IActionResult> MyProjects()
         {
             string userId = _userManager.GetUserId(User);
@@ -48,6 +49,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/AllProjects
+        [HttpGet]
         public async Task<IActionResult> AllProjects()
         {
 
@@ -58,6 +60,8 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/ArchivedProjects
+        [HttpGet]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public async Task<IActionResult> ArchivedProjects()
         {
             int companyId = User.Identity.GetCompanyId();
@@ -67,6 +71,8 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/UnassignedProjects
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UnassignedProjects()
         {
             int companyId = User.Identity.GetCompanyId();
@@ -168,6 +174,7 @@ namespace BugTracker.Controllers
 
 
         // GET: Projects/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -186,8 +193,8 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Create
-        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpGet]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public async Task<IActionResult> Create()
         {
             int companyId = User.Identity.GetCompanyId();
@@ -246,6 +253,7 @@ namespace BugTracker.Controllers
 
         // GET: Projects/Edit/5
         [HttpGet]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -327,6 +335,8 @@ namespace BugTracker.Controllers
 
 
         // GET: Projects/Archive/5
+        [HttpGet]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public async Task<IActionResult> Archive(int? id)
         {
             if (id == null)
@@ -359,6 +369,8 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Restore/5
+        [HttpGet]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null)

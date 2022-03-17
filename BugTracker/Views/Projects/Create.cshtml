@@ -9,7 +9,7 @@
     <div class="col-md-4">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Project!.Archived" />
+            <input type="hidden" asp-for="Project!.Archived" value="false"/>
 
             <div class="form-group">
                 <label asp-for="Project!.Name" class="control-label"></label>
