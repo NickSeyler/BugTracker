@@ -14,7 +14,7 @@
 		<!-- Basic -->
 		<meta charset="UTF-8">
 
-		<title>Default Layout | Porto Admin - Responsive HTML5 Template</title>
+		<title>BugTracker with Porto Admin - Responsive HTML5 Template</title>
 		<meta name="keywords" content="HTML5 Admin Template" />
 		<meta name="description" content="Porto Admin - Responsive HTML5 Template">
 		<meta name="author" content="okler.net">
@@ -37,6 +37,9 @@
 		<link rel="stylesheet" href="~/template/vendor/bootstrap-multiselect/css/bootstrap-multiselect.css" />
 		<link rel="stylesheet" href="~/template/vendor/morris/morris.css" />
 
+		<!-- My CSS -->
+		<link rel="stylesheet" href="~/css/MyCSS.css" />
+
 		<!-- Theme CSS -->
 		<link rel="stylesheet" href="~/template/css/theme.css" />
 
@@ -58,8 +61,9 @@
 			<!-- start: header -->
 			<header class="header">
 				<div class="logo-container">
-					<a href="../4.0.0" class="logo">
-						<img src="~/template/img/logo.png" width="75" height="35" alt="Porto Admin" />
+					<a href="https://nickseyler-portfolio.netlify.app/" class="logo">
+						<img src="~/img/NSDarkLogo.jpg" width="32" height="32" alt="Logo" />
+						<span class="spanlink ps-2">Visit My Portfolio</span>
 					</a>
 
 					<div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
@@ -226,12 +230,15 @@
 				                        </a>                        
 				                    </li>
 				                    
-				                    <li>
-				                        <a asp-area="" asp-controller="Notifications" asp-action="Index">
-				                            <span class="float-end badge badge-primary">182</span>
+				                    <li class="nav-parent">
+				                        <a class="nav-link" href="#">
 				                            <i class="bx bx-envelope" aria-hidden="true"></i>
 				                            <span>Notifications</span>
-				                        </a>                        
+				                        </a>
+										<ul class="nav nav-children">
+											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="SentNotifications">Sent Notifications</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="RecievedNotifications">Recieved Notifications</a></li>
+										</ul>
 				                    </li>
 
 				                    <li class="nav-parent">
@@ -305,7 +312,7 @@
 				                }
 				            }
 				        </script>
-
+						</div>
 				    </div>
 
 				</aside>

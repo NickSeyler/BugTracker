@@ -1,0 +1,53 @@
+﻿@model IEnumerable<BugTracker.Models.Notification>
+
+@{
+    ViewData["Title"] = "Sent Notifications";
+}
+
+<header class="page-header">
+	<h2>Sent Notifications</h2>
+</header>
+
+<h1>Sent Notifications</h1>
+
+<table class="table table-bordered table-striped mb-0" id="datatable-tabletools">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Title)</th>
+            <th>@Html.DisplayNameFor(model => model.Message)</th>
+            <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+            <th>@Html.DisplayNameFor(model => model.Viewed)</th>
+            <th>@Html.DisplayNameFor(model => model.Ticket)</th>
+            <th>Sent By</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+            <td>@Html.DisplayFor(modelItem => item.Message)</td>
+            <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.Viewed)</td>
+            <td> @Html.DisplayFor(modelItem => item.Ticket.Description)</td>
+            <td>@Html.DisplayFor(modelItem => item.Sender.FullName)</td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section scripts{
+    <script src="~/template/vendor/select2/js/select2.js"></script>
+	<script src="~/template/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
+	<script src="~/template/vendor/datatables/media/js/dataTables.bootstrap5.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/dataTables.buttons.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.bootstrap4.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.html5.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.print.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/JSZip-2.5.0/jszip.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/pdfmake-0.1.32/pdfmake.min.js"></script>
+	<script src="~/template/vendor/datatables/extras/TableTools/pdfmake-0.1.32/vfs_fonts.js"></script>
+
+    <script src="~/template/js/examples/examples.datatables.default.js"></script>
+    <script src="~/template/js/examples/examples.datatables.row.with.details.js"></script>
+    <script src="~/template/js/examples/examples.datatables.tabletools.js"></script>
+}

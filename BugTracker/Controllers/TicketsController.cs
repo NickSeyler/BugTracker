@@ -113,6 +113,24 @@ namespace BugTracker.Controllers
             }
         }
 
+        public async Task<IActionResult> SentNotifications()
+        {
+            string userId = _userManager.GetUserId(User);
+
+            List<Notification> notifications = await _notificationService.GetSentNotificationsAsync(userId);
+
+            return View(notifications);
+        }
+
+        public async Task<IActionResult> RecievedNotifications()
+        {
+            string userId = _userManager.GetUserId(User);
+
+            List<Notification> notifications = await _notificationService.GetReceivedNotificationsAsync(userId);
+
+            return View(notifications);
+        }
+
         [Authorize(Roles = "Admin, ProjectManager")]
         [HttpGet]
         public async Task<IActionResult> AssignDeveloper(int? ticketId)
