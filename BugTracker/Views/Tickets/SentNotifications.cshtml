@@ -16,9 +16,8 @@
             <th>@Html.DisplayNameFor(model => model.Title)</th>
             <th>@Html.DisplayNameFor(model => model.Message)</th>
             <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
-            <th>@Html.DisplayNameFor(model => model.Viewed)</th>
             <th>@Html.DisplayNameFor(model => model.Ticket)</th>
-            <th>Sent By</th>
+            <th>Sent To</th>
         </tr>
     </thead>
     <tbody>
@@ -27,9 +26,8 @@
             <td>@Html.DisplayFor(modelItem => item.Title)</td>
             <td>@Html.DisplayFor(modelItem => item.Message)</td>
             <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
-            <td>@Html.DisplayFor(modelItem => item.Viewed)</td>
             <td> @Html.DisplayFor(modelItem => item.Ticket.Description)</td>
-            <td>@Html.DisplayFor(modelItem => item.Sender.FullName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Recipient.FullName)</td>
         </tr>
 }
     </tbody>

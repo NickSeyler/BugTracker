@@ -72,6 +72,24 @@ namespace BugTracker.Services
             }
         }
 
+        public async Task SetAllNotificationsToViewedAsync(string userId)
+        {
+            try
+            {
+                List<Notification> notifications = await GetReceivedNotificationsAsync(userId);
+                foreach(Notification n in notifications)
+                {
+                    n.Viewed = true;
+                    _context.Update(n);
+                }
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> SendEmailNotificationAsync(Notification notification, string emailSubject)
         {
             try

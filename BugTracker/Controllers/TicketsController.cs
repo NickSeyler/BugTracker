@@ -131,6 +131,15 @@ namespace BugTracker.Controllers
             return View(notifications);
         }
 
+        public async Task<IActionResult> ViewNotifications()
+        {
+            string userId = _userManager.GetUserId(User);
+
+            await _notificationService.SetAllNotificationsToViewedAsync(userId);
+
+            return RedirectToAction(nameof(RecievedNotifications));
+        }
+
         [Authorize(Roles = "Admin, ProjectManager")]
         [HttpGet]
         public async Task<IActionResult> AssignDeveloper(int? ticketId)
@@ -160,22 +169,18 @@ namespace BugTracker.Controllers
                 try
                 {
                     await _ticketService.AssignTicketAsync(model.Ticket.Id, model.DeveloperID);
-
-                    if (model.Ticket.DeveloperUserId != null)
+                    Notification devNotification = new()
                     {
-                        Notification devNotification = new()
-                        {
-                            TicketId = model.Ticket.Id,
-                            NotificationTypeId = (await _lookupService.LookupNotificationTypeIdAsync(nameof(BTNotificationType.Ticket))).Value,
-                            Title = "Ticket Updated",
-                            Message = $"Ticket: {model.Ticket.Title}, was updated by {btUser.FullName}",
-                            CreatedDate = DateTime.UtcNow,
-                            SenderId = btUser.Id,
-                            RecipientId = model.Ticket.DeveloperUserId
-                        };
-                        await _notificationService.AddNotificationAsync(devNotification);
-                        await _notificationService.SendEmailNotificationAsync(devNotification, "Ticket Updated");
-                    }
+                        TicketId = model.Ticket.Id,
+                        NotificationTypeId = (await _lookupService.LookupNotificationTypeIdAsync(nameof(BTNotificationType.Ticket))).Value,
+                        Title = "Ticket Updated",
+                        Message = $"Ticket: {model.Ticket.Title} was updated by {btUser.FullName}",
+                        CreatedDate = DateTime.UtcNow,
+                        SenderId = btUser.Id,
+                        RecipientId = model.DeveloperID
+                    };
+                    await _notificationService.AddNotificationAsync(devNotification);
+                    await _notificationService.SendEmailNotificationAsync(devNotification, "Ticket Updated");
                 }
                 catch(Exception)
                 {

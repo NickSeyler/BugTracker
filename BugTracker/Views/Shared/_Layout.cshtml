@@ -1,8 +1,10 @@
 ﻿@using BugTracker.Models.Enums
+@using BugTracker.Services.Interfaces
 @using Microsoft.AspNetCore.Identity
 
 @inject SignInManager<BTUser> SignInManager
 @inject UserManager<BTUser> UserManager
+@inject IBTNotificationService NotificationService
 
 @{
 	BTUser btUser = await UserManager.GetUserAsync(User);
@@ -59,9 +61,9 @@
 		<section class="body">
 
 			<!-- start: header -->
-			<header class="header">
+			<header class="header" style="background:#EDEDED;">
 				<div class="logo-container">
-					<a href="https://nickseyler-portfolio.netlify.app/" class="logo">
+					<a href="https://nickseyler-portfolio.netlify.app/" class="logo" target="_blank">
 						<img src="~/img/NSDarkLogo.jpg" width="32" height="32" alt="Logo" />
 						<span class="spanlink ps-2">Visit My Portfolio</span>
 					</a>
@@ -75,54 +77,48 @@
 				<!-- user box -->
 				<div class="header-right">
 					<ul class="notifications">
-							
+						@{
+							List<Notification> notifications = (await NotificationService.GetReceivedNotificationsAsync(btUser.Id)).Where(n => n.Viewed == false).ToList();
+							int nCount = notifications.Count();
+						}
 						<li>
 							<a href="#" class="dropdown-toggle notification-icon" data-bs-toggle="dropdown">
 								<i class="bx bx-bell"></i>
-								<span class="badge">3</span>
+								@if(nCount > 0)
+								{
+								<span class="badge">
+									@nCount
+								</span>
+								}
 							</a>
 
 							<div class="dropdown-menu notification-menu">
 								<div class="notification-title">
-									<span class="float-end badge badge-default">3</span>
+									<span class="float-end badge badge-default">
+										@nCount
+									</span>
 									Alerts
 								</div>
 
 								<div class="content">
+									@if(nCount > 0)
+									{
 									<ul>
+										@foreach(Notification notification in notifications){
 										<li>
 											<a href="#" class="clearfix">
-												<div class="image">
-													<i class="fas fa-thumbs-down bg-danger text-light"></i>
-												</div>
-												<span class="title">Server is Down!</span>
-												<span class="message">Just now</span>
+												<span class="title">@notification.Title</span>
+												<span class="message">@notification.Message</span>
 											</a>
 										</li>
-										<li>
-											<a href="#" class="clearfix">
-												<div class="image">
-													<i class="bx bx-lock bg-warning text-light"></i>
-												</div>
-												<span class="title">User Locked</span>
-												<span class="message">15 minutes ago</span>
-											</a>
-										</li>
-										<li>
-											<a href="#" class="clearfix">
-												<div class="image">
-													<i class="fas fa-signal bg-success text-light"></i>
-												</div>
-												<span class="title">Connection Restaured</span>
-												<span class="message">10/10/2021</span>
-											</a>
-										</li>
+										}
 									</ul>
 
 									<hr />
+									}
 
 									<div class="text-end">
-										<a href="#" class="view-more">View All</a>
+										<a class="view-more" asp-area="" asp-controller="Tickets" asp-action="ViewNotifications">View All</a>
 									</div>
 								</div>
 							</div>
@@ -237,7 +233,7 @@
 				                        </a>
 										<ul class="nav nav-children">
 											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="SentNotifications">Sent Notifications</a></li>
-											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="RecievedNotifications">Recieved Notifications</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="ViewNotifications">Recieved Notifications</a></li>
 										</ul>
 				                    </li>
 

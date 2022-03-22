@@ -10,6 +10,7 @@
     <div class="col-md-4">
         <form method="post" asp-action="AssignDeveloper" asp-controller="Tickets">
             <input hidden asp-for="Ticket!.Id" />
+            <input hidden asp-for="Ticket!.Title" />
 
             <h2>@Model.Ticket?.Title </h2>
 

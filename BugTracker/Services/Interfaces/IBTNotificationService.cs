@@ -10,6 +10,8 @@ namespace BugTracker.Services.Interfaces
 
         public Task<List<Notification>> GetSentNotificationsAsync(string userId);
 
+        public Task SetAllNotificationsToViewedAsync(string userId);
+
         public Task SendEmailNotificationsByRoleAsync(Notification notification, int companyId, string role);
 
         public Task SendMembersEmailNotificationsAsync(Notification notification, List<BTUser> members);
