@@ -10,7 +10,12 @@
 	BTUser btUser = await UserManager.GetUserAsync(User);
 }
 
+<header class="page-header">
+	<h2>Dashboard</h2>
+</header>
+
 <h1>Dashboard</h1>
+
 <a href="javascript:void(0);">
 	@* User Info *@
 	@if (btUser.AvatarData != null)
