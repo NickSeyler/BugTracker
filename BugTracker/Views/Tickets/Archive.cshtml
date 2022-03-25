@@ -1,15 +1,16 @@
 ﻿@model BugTracker.Models.Ticket
 
 @{
-    ViewData["Title"] = "Archive";
+    ViewData["Title"] = "Archive Ticket";
 }
 
-<h1>Archive</h1>
+<header class="page-header">
+	<h2>Archive Ticket</h2>
+</header>
 
-<h3>Are you sure you want to archive this?</h3>
+<h1>Are you sure you want to archive this ticket?</h1>
+
 <div>
-    <h4>Ticket</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Title)

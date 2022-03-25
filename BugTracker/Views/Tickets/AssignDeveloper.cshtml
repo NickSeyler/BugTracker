@@ -3,9 +3,13 @@
 @{
     ViewData["Title"] = "Assign Developer";
 }
+
+<header class="page-header">
+	<h2>Assign Developer</h2>
+</header>
+
 <h1>Ticket : @Model.Ticket?.Title</h1>
-<h4>Assign Developer</h4>
-<hr />
+
 <div class="row">
     <div class="col-md-4">
         <form method="post" asp-action="AssignDeveloper" asp-controller="Tickets">

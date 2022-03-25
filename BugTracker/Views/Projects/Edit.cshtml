@@ -1,10 +1,16 @@
 ﻿@model BugTracker.Models.ViewModels.AddProjectWithPMViewModel
 @using BugTracker.Models.Enums;
 
-<h1>Edit</h1>
+@{
+    ViewData["Title"] = "Edit Project";
+}
 
-<h4>Project</h4>
-<hr />
+<header class="page-header">
+	<h2>Edit Project</h2>
+</header>
+
+<h1>Edit Project</h1>
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" method="post" enctype="multipart/form-data">

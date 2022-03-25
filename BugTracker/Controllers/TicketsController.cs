@@ -439,6 +439,7 @@ namespace BugTracker.Controllers
                     else
                     {
                         //Admin notification
+                        notification.RecipientId = btUser.Id;
                         await _notificationService.AddNotificationAsync(notification);
                         await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(BTRole.Admin));
                     }
