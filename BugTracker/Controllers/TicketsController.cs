@@ -325,6 +325,7 @@ namespace BugTracker.Controllers
 
                     BTUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
                     int companyId = User.Identity!.GetCompanyId()!;
+
                     Notification notification = new()
                     {
                         TicketId = ticket.Id,
@@ -343,6 +344,7 @@ namespace BugTracker.Controllers
                     else
                     {
                         //Admin notification
+                        notification.RecipientId = btUser.Id;
                         await _notificationService.AddNotificationAsync(notification);
                         await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(BTRole.Admin));
                     }
